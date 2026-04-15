@@ -174,7 +174,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .empty-sub{font-size:13px;color:var(--text3)}
 .spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.scroll-top{position:absolute;bottom:16px;right:16px;width:42px;height:42px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.scroll-top{position:absolute;bottom:80px;right:16px;width:44px;height:44px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
 .scroll-top.visible{opacity:1;pointer-events:all}
 .scroll-top:active{transform:scale(.92)}
 .scroll-top svg{width:18px;height:18px;fill:none;stroke:#0D1B2A;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
@@ -230,9 +230,6 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
       <div class="list-wrap" id="homeList">
         <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas en Valencia...</div></div>
       </div>
-      <button class="scroll-top" id="scrollTopHome" onclick="scrollTop('s-home')" aria-label="Ir arriba">
-        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </button>
     </div>
 
     <div class="screen" id="s-search">
@@ -255,9 +252,6 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
       </div>
       <div style="padding:4px 16px 8px;font-size:12px;color:var(--text3)" id="searchCount">0 terrazas</div>
       <div class="list-wrap" id="searchList" style="padding-top:0"></div>
-      <button class="scroll-top" id="scrollTopSearch" onclick="scrollTop('s-search')" aria-label="Ir arriba">
-        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </button>
     </div>
 
     <div class="screen" id="s-detail">
@@ -277,6 +271,13 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 
       </div>
     </div>
+  <!-- Scroll-to-top buttons, positioned over the screens wrapper -->
+  <button class="scroll-top" id="scrollTopHome" onclick="scrollTopFn('s-home')" aria-label="Ir arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <button class="scroll-top" id="scrollTopSearch" onclick="scrollTopFn('s-search')" aria-label="Ir arriba" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
   </div>
 
   <nav class="nav">
@@ -537,22 +538,53 @@ function showDetail(id) {
         {featureType:'poi',stylers:[{visibility:'off'}]},
         {featureType:'transit',stylers:[{visibility:'off'}]}
       ];
-      var m2 = new google.maps.Map(wrap, {
-        center:{lat:t.lat,lng:t.lng}, zoom:16, disableDefaultUI:true,
+      var detMap = new google.maps.Map(wrap, {
+        center:{lat:t.lat,lng:t.lng}, zoom:15, disableDefaultUI:true,
         styles: MAP_STYLES
       });
-      // Marcador del establecimiento (igual que en pantalla Mapa)
-      var sun2 = sunExp(t.o,cl(),tp());
-      var color2 = sun2.cls==='soleada'?'#F5C842':sun2.cls==='parcial'?'#4FA8D5':'#4A7A9B';
-      new google.maps.Marker({
-        position:{lat:t.lat,lng:t.lng}, map:m2, title:t.n,
-        icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:color2,fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
+      var detInfoWindow = new google.maps.InfoWindow();
+
+      // Resto de terrazas con círculos (igual que pantalla Mapa)
+      DB.forEach(function(other) {
+        if (other.id === t.id) return;
+        var s2 = sunExp(other.o,cl(),tp());
+        var col = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#4A7A9B';
+        var m2 = new google.maps.Marker({
+          position:{lat:other.lat,lng:other.lng}, map:detMap, title:other.n,
+          icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:col,fillOpacity:0.85,strokeColor:'#0D1B2A',strokeWeight:1.5}
+        });
+        m2.addListener('click', function(){
+          detInfoWindow.setContent(
+            '<div style="font-family:DM Sans,sans-serif;padding:4px;min-width:140px">'
+            +'<div style="font-weight:600;font-size:13px;margin-bottom:3px">'+other.n+'</div>'
+            +'<div style="font-size:11px;color:#888;margin-bottom:6px">'+other.z+'</div>'
+            +'<button onclick="showDetail('+other.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-family:inherit;cursor:pointer;width:100%;font-weight:500">Ver detalle</button>'
+            +'</div>'
+          );
+          detInfoWindow.open(detMap, m2);
+        });
       });
-      // Pin de ubicación del usuario
+
+      // Chincheta para la terraza seleccionada
+      new google.maps.Marker({
+        position:{lat:t.lat,lng:t.lng}, map:detMap, title:t.n,
+        icon:{
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">'
+            +'<path d="M16 0C7.16 0 0 7.16 0 16c0 10.5 16 26 16 26S32 26.5 32 16C32 7.16 24.84 0 16 0z" fill="#F5C842" stroke="#0D1B2A" stroke-width="2"/>'
+            +'<circle cx="16" cy="16" r="6" fill="#0D1B2A"/>'
+            +'</svg>'
+          ),
+          scaledSize: new google.maps.Size(32, 42),
+          anchor: new google.maps.Point(16, 42)
+        }
+      });
+
+      // Pin ubicación usuario
       if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(function(p){
           new google.maps.Marker({
-            position:{lat:p.coords.latitude,lng:p.coords.longitude}, map:m2, title:'Tu ubicación',
+            position:{lat:p.coords.latitude,lng:p.coords.longitude}, map:detMap, title:'Tu ubicación',
             icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
           });
         });
@@ -703,9 +735,19 @@ function renderMapList() {
   var el = document.getElementById('mapList');
   el.innerHTML = DB.map(function(t){
     var sun=sunExp(t.o,cl(),tp()), op=isOp(t);
+    var sunColor = sun.cls==='soleada'?'#F5D060':sun.cls==='parcial'?'var(--acc2)':'var(--text3)';
+    var opColor  = op ? 'var(--green)' : 'var(--red)';
     return '<div class="map-titem" onclick="focusMarker('+t.id+')">'
       +'<div class="mti-dot '+sun.cls+'"></div>'
-      +'<div class="mti-info"><div class="mti-name">'+t.n+'</div><div class="mti-meta">'+t.z+' · '+(op?'Abierto':'Cerrado')+' · '+sun.txt+'</div></div>'
+      +'<div class="mti-info">'
+        +'<div class="mti-name">'+t.n+'</div>'
+        +'<div class="mti-meta">'
+          +'<span style="color:'+opColor+';font-weight:500">'+(op?'Abierto':'Cerrado')+'</span>'
+          +' · '
+          +'<span style="color:'+sunColor+';font-weight:500">'+sun.txt+'</span>'
+          +' · '+t.z
+        +'</div>'
+      +'</div>'
       +'<button class="mti-go" onclick="event.stopPropagation();showDetail('+t.id+')">Ver</button>'
       +'</div>';
   }).join('');
@@ -726,7 +768,7 @@ function openGMaps(tlat,tlng){ window.open('https://www.google.com/maps/search/?
 function openSV(tlat,tlng){ window.open('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+tlat+','+tlng,'_blank'); }
 function openRoute(tlat,tlng){ window.open('https://www.google.com/maps/dir/?api=1&origin='+lat+','+lon+'&destination='+tlat+','+tlng+'&travelmode=walking','_blank'); }
 
-function scrollTop(screenId) {
+function scrollTopFn(screenId) {
   var el = document.getElementById(screenId);
   if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -734,13 +776,23 @@ function scrollTop(screenId) {
 function onScreenScroll(e) {
   var screen = e.target;
   var id = screen.id;
-  var btnId = id === 's-home' ? 'scrollTopHome' : id === 's-search' ? 'scrollTopSearch' : null;
-  if (!btnId) return;
-  var btn = document.getElementById(btnId);
-  if (btn) btn.classList.toggle('visible', screen.scrollTop > 200);
+  if (id !== 's-home' && id !== 's-search') return;
+  var btnHome   = document.getElementById('scrollTopHome');
+  var btnSearch = document.getElementById('scrollTopSearch');
+  var scrolled  = screen.scrollTop > 200;
+  if (id === 's-home') {
+    btnHome.classList.toggle('visible', scrolled);
+  } else {
+    btnSearch.classList.toggle('visible', scrolled);
+  }
 }
 
 function goTo(s){
+  // Manage scroll-to-top button visibility per screen
+  var btnHome   = document.getElementById('scrollTopHome');
+  var btnSearch = document.getElementById('scrollTopSearch');
+  if (btnHome)   { btnHome.style.display   = s==='home'   ? 'flex' : 'none'; btnHome.classList.remove('visible'); }
+  if (btnSearch) { btnSearch.style.display = s==='search' ? 'flex' : 'none'; btnSearch.classList.remove('visible'); }
   document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active');});
   document.getElementById('s-'+s).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
