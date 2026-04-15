@@ -128,6 +128,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .vb-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px}
 .vb-text{font-size:13px;color:var(--text2);line-height:1.55}
 .det-section{padding:14px 16px;border-bottom:1px solid var(--border)}
+.det-section-map{padding:14px 0 0;border-bottom:1px solid var(--border)}
 .det-stitle{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
 .det-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px}
 .det-row:last-child{border-bottom:none}
@@ -137,12 +138,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .tip-item:last-child{border-bottom:none}
 .tip-icon{font-size:16px;flex-shrink:0;width:22px}
 .tag{display:inline-block;background:var(--bg3);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text3);margin:4px 4px 0 0;border:1px solid var(--border)}
-.loc-map-wrap{width:100%;height:200px;border-radius:14px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border);background:var(--bg3)}
+.loc-map-wrap{width:100%;height:280px;border-radius:0;overflow:hidden;margin-bottom:10px;border:none;background:var(--bg3)}
 .loc-map-wrap iframe{width:100%;height:100%;border:none;display:block}
 .btn-group{display:flex;flex-direction:row;gap:6px;margin-top:4px}
-.btn-primary{flex:1;background:var(--acc);color:#0D1B2A;border:none;border-radius:10px;padding:9px 6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
-.btn-primary:active{opacity:.85}
-.btn-route{background:var(--bg3);color:var(--acc2);border:1px solid var(--border2)}
+.btn-group .btn-primary{flex:1;background:var(--acc);color:#0D1B2A;border:none;border-radius:10px;padding:9px 6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+.btn-group .btn-primary:active{opacity:.85}
+.btn-group .btn-route{background:var(--bg3);color:var(--acc2);border:1px solid var(--border2)}
 
 .map-screen-inner{display:flex;flex-direction:column;height:100%}
 #mapContainer{flex:1;position:relative;background:var(--bg2)}
@@ -160,13 +161,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .mti-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mti-meta{font-size:12px;color:var(--text3)}
 .mti-go{background:var(--acc);color:#0D1B2A;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
-.apikey-panel{background:var(--card);border-top:1px solid var(--border);padding:12px 16px 14px;flex-shrink:0}
-.aklbl{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
-.ak-row{display:flex;gap:8px;align-items:center}
-.ak-row input{flex:1;border:1px solid var(--border2);border-radius:10px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg2);outline:none}
-.ak-row input:focus{border-color:var(--acc)}
-.ak-row input::placeholder{color:var(--text3)}
-.ak-row button{background:var(--acc);color:#0D1B2A;border:none;border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+
 
 .search-hdr{padding:10px 12px;flex-shrink:0}
 .search-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border2);border-radius:50px;padding:10px 14px}
@@ -179,6 +174,10 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .empty-sub{font-size:13px;color:var(--text3)}
 .spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
+.scroll-top{position:absolute;bottom:16px;right:16px;width:42px;height:42px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.scroll-top.visible{opacity:1;pointer-events:all}
+.scroll-top:active{transform:scale(.92)}
+.scroll-top svg{width:18px;height:18px;fill:none;stroke:#0D1B2A;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -231,6 +230,9 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
       <div class="list-wrap" id="homeList">
         <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas en Valencia...</div></div>
       </div>
+      <button class="scroll-top" id="scrollTopHome" onclick="scrollTop('s-home')" aria-label="Ir arriba">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </button>
     </div>
 
     <div class="screen" id="s-search">
@@ -253,6 +255,9 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
       </div>
       <div style="padding:4px 16px 8px;font-size:12px;color:var(--text3)" id="searchCount">0 terrazas</div>
       <div class="list-wrap" id="searchList" style="padding-top:0"></div>
+      <button class="scroll-top" id="scrollTopSearch" onclick="scrollTop('s-search')" aria-label="Ir arriba">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </button>
     </div>
 
     <div class="screen" id="s-detail">
@@ -269,13 +274,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
           <div id="gmap" style="display:none;width:100%;height:100%"></div>
         </div>
         <div class="map-list" id="mapList"></div>
-        <div class="apikey-panel">
-          <div class="aklbl">Google Maps API Key</div>
-          <div class="ak-row">
-            <input type="text" id="apiKeyInput" value="AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0" autocomplete="off" spellcheck="false"/>
-            <button onclick="reloadMaps()">Cambiar</button>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -502,9 +501,9 @@ function showDetail(id) {
     +'<div class="det-hero"><div class="det-name">'+t.n+'</div>'
     +'<div class="det-sub">'+t.t.charAt(0).toUpperCase()+t.t.slice(1)+' · '+t.z+' · '+t.dir+'</div>'
     +'<div class="verdict-big '+vc+'"><div class="vb-icon">'+vi+'</div><div><div class="vb-title">'+vt+'</div><div class="vb-text">'+vd+'</div></div></div></div>'
-    +'<div class="det-section"><div class="det-stitle">Ubicación</div>'
+    +'<div class="det-section det-section-map"><div class="det-stitle" style="padding:0 16px 10px;margin:0">Ubicación</div>'
     +'<div class="loc-map-wrap" id="locMapWrap">'+locMap+'</div>'
-    +'<div class="btn-group">'
+    +'<div style="padding:10px 0 0"><div class="btn-group">'
     +'<button class="btn-primary" onclick="openGMaps('+t.lat+','+t.lng+')">Google Maps</button>'
     +'<button class="btn-primary" onclick="openSV('+t.lat+','+t.lng+')">Street View</button>'
     +'<button class="btn-primary btn-route" onclick="openRoute('+t.lat+','+t.lng+')">Cómo llegar</button>'
@@ -528,11 +527,36 @@ function showDetail(id) {
   if(gmap) {
     setTimeout(function(){
       var wrap = document.getElementById('locMapDiv'); if(!wrap) return;
+      var MAP_STYLES = [
+        {elementType:'geometry',stylers:[{color:'#112236'}]},
+        {elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},
+        {elementType:'labels.text.stroke',stylers:[{color:'#0D1B2A'}]},
+        {featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},
+        {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#243F5E'}]},
+        {featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},
+        {featureType:'poi',stylers:[{visibility:'off'}]},
+        {featureType:'transit',stylers:[{visibility:'off'}]}
+      ];
       var m2 = new google.maps.Map(wrap, {
         center:{lat:t.lat,lng:t.lng}, zoom:16, disableDefaultUI:true,
-        styles:[{elementType:'geometry',stylers:[{color:'#112236'}]},{elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},{featureType:'poi',stylers:[{visibility:'off'}]}]
+        styles: MAP_STYLES
       });
-      new google.maps.Marker({position:{lat:t.lat,lng:t.lng},map:m2,title:t.n,icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:'#4FA8D5',fillOpacity:1,strokeColor:'#F4FAFF',strokeWeight:2.5}});
+      // Marcador del establecimiento (igual que en pantalla Mapa)
+      var sun2 = sunExp(t.o,cl(),tp());
+      var color2 = sun2.cls==='soleada'?'#F5C842':sun2.cls==='parcial'?'#4FA8D5':'#4A7A9B';
+      new google.maps.Marker({
+        position:{lat:t.lat,lng:t.lng}, map:m2, title:t.n,
+        icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:color2,fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
+      });
+      // Pin de ubicación del usuario
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(p){
+          new google.maps.Marker({
+            position:{lat:p.coords.latitude,lng:p.coords.longitude}, map:m2, title:'Tu ubicación',
+            icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
+          });
+        });
+      }
     }, 200);
   }
 }
@@ -563,7 +587,6 @@ var STATIC_DB = [
   {id:20,n:"Fresca Ensaladas",t:"restaurante",z:"Benimaclet",d:"Restaurante saludable con bowls y zumos.",dir:"C/ de Murillo, 38",h:{a:10,c:22},o:"SE",tags:[],r:4.5,rv:890,toldos:true,calef:false,vistas:false,lat:39.4820,lng:-0.3620}
 ];
 
-function dbg(msg){ console.log('[Terrazas]', msg); }
 function setStatus(msg) {
   var el = document.getElementById('homeList');
   if (DB.length === 0) {
@@ -572,7 +595,6 @@ function setStatus(msg) {
 }
 
 window.mapsCallback = function() {
-  dbg('Maps cargado OK');
   setStatus('Conectando con Google Places...');
   var mapEl = document.getElementById('gmap');
   mapEl.style.display = 'block';
@@ -587,13 +609,11 @@ window.mapsCallback = function() {
       new google.maps.Marker({position:{lat:p.coords.latitude,lng:p.coords.longitude},map:gmap,title:'Tu ubicación',icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}});
     });
   }
-  dbg('Iniciando búsqueda Places...');
   loadPlaces();
 };
 
 // Si Maps no carga en 5s, usar datos estáticos
 setTimeout(function(){
-  dbg('Timeout: DB.length=' + DB.length);
   if (DB.length === 0) {
     DB = sortByDist(STATIC_DB);
     renderHome(); renderSearch(); renderMapList();
@@ -601,7 +621,7 @@ setTimeout(function(){
 }, 2000);
 
 function loadPlaces() {
-  if (!gmap) { dbg('ERROR: gmap no inicializado'); return; }
+  if (!gmap) { return; }
   setStatus('Buscando terrazas en Valencia...');
   var center = new google.maps.LatLng(39.4699, -0.3763);
   var svc = new google.maps.places.PlacesService(gmap);
@@ -611,7 +631,6 @@ function loadPlaces() {
   STATIC_DB.forEach(function(t){ seen['static_'+t.id] = true; });
 
   function onDone() {
-    dbg('onDone llamado, pending=' + (pending-1) + ', resultados=' + results.length);
     pending--;
     if (pending > 0) return;
     // Mezclar resultados de Places con estáticos no duplicados
@@ -630,7 +649,6 @@ function loadPlaces() {
     svc.nearbySearch(
       {location:center, radius:8000, keyword:keyword, type:type},
       function(places, status) {
-        dbg('Places respuesta: status=' + status + ', n=' + (places?places.length:0));
         if (places) {
           places.forEach(function(p) {
             if (!p.geometry || !p.place_id || seen[p.place_id]) return;
@@ -701,22 +719,33 @@ function focusMarker(id){
   if(m) google.maps.event.trigger(m.marker,'click');
 }
 
-function reloadMaps(){
-  var k=document.getElementById('apiKeyInput').value.trim();
-  if(k) { GKEY=k; localStorage.setItem('gkey',k); location.reload(); }
-}
+
 
 /* ── NAVIGATION ───────────────────────────────────────── */
 function openGMaps(tlat,tlng){ window.open('https://www.google.com/maps/search/?api=1&query='+tlat+','+tlng,'_blank'); }
 function openSV(tlat,tlng){ window.open('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+tlat+','+tlng,'_blank'); }
 function openRoute(tlat,tlng){ window.open('https://www.google.com/maps/dir/?api=1&origin='+lat+','+lon+'&destination='+tlat+','+tlng+'&travelmode=walking','_blank'); }
 
+function scrollTop(screenId) {
+  var el = document.getElementById(screenId);
+  if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function onScreenScroll(e) {
+  var screen = e.target;
+  var id = screen.id;
+  var btnId = id === 's-home' ? 'scrollTopHome' : id === 's-search' ? 'scrollTopSearch' : null;
+  if (!btnId) return;
+  var btn = document.getElementById(btnId);
+  if (btn) btn.classList.toggle('visible', screen.scrollTop > 200);
+}
+
 function goTo(s){
   document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active');});
   document.getElementById('s-'+s).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   var nb=document.getElementById('nb-'+s); if(nb) nb.classList.add('active');
-  if(s==='search') setTimeout(function(){document.getElementById('sInput').focus();},200);
+
 }
 function goBack(){ goTo(prevScreen); }
 function toggleSheet(){ document.getElementById('wSheet').classList.toggle('open'); }
@@ -731,16 +760,21 @@ function getLocation(){
 setInterval(loadW, 600000);
 loadW();
 
+// Attach scroll listeners for scroll-to-top buttons
+['s-home','s-search'].forEach(function(id){
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('scroll', onScreenScroll, { passive: true });
+});
+
 // Cargar Google Maps + Places
 (function(){
   var s = document.createElement('script');
   s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0&libraries=places&callback=mapsCallback';
   s.async = true;
   s.defer = true;
-  s.onload = function(){ dbg('Script Maps cargado (onload)'); };
-  s.onerror = function(e){ dbg('ERROR cargando script Maps: ' + (e && e.message ? e.message : 'sin detalles')); };
+  s.onload = function(){ };
+  s.onerror = function(e){ };
   document.head.appendChild(s);
-  dbg('Script Maps inyectado en DOM');
 })();
 </script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>
