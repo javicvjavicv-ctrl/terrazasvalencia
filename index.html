@@ -528,20 +528,7 @@ function showDetail(id) {
   if(gmap) {
     setTimeout(function(){
       var wrap = document.getElementById('locMapDiv'); if(!wrap) return;
-      var MAP_STYLES = [
-        {elementType:'geometry',stylers:[{color:'#112236'}]},
-        {elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},
-        {elementType:'labels.text.stroke',stylers:[{color:'#0D1B2A'}]},
-        {featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},
-        {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#243F5E'}]},
-        {featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},
-        {featureType:'poi',stylers:[{visibility:'off'}]},
-        {featureType:'transit',stylers:[{visibility:'off'}]}
-      ];
-      var detMap = new google.maps.Map(wrap, {
-        center:{lat:t.lat,lng:t.lng}, zoom:15, disableDefaultUI:true,
-        styles: MAP_STYLES
-      });
+      var detMap = new google.maps.Map(wrap, {center:{lat:t.lat,lng:t.lng}, zoom:15, disableDefaultUI:true});
       var detInfoWindow = new google.maps.InfoWindow();
 
       // Resto de terrazas con círculos (igual que pantalla Mapa)
@@ -631,10 +618,7 @@ window.mapsCallback = function() {
   var mapEl = document.getElementById('gmap');
   mapEl.style.display = 'block';
   document.getElementById('mapEmpty').style.display = 'none';
-  gmap = new google.maps.Map(mapEl, {
-    center:{lat:39.4699,lng:-0.3763}, zoom:13, disableDefaultUI:true,
-    styles:[{elementType:'geometry',stylers:[{color:'#112236'}]},{elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},{elementType:'labels.text.stroke',stylers:[{color:'#0D1B2A'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},{featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#243F5E'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}]
-  });
+  gmap = new google.maps.Map(mapEl, {center:{lat:39.4699,lng:-0.3763}, zoom:13, disableDefaultUI:true});
   infoWindow = new google.maps.InfoWindow();
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(p){
