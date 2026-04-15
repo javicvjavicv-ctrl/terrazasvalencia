@@ -7,28 +7,28 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Terrazas">
-<meta name="theme-color" content="#1E1A14">
+<meta name="theme-color" content="#0D1B2A">
 <title>Terrazas Valencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --sun:#F5A623;--terra:#D4845A;--sky:#5B9BD6;
-  --bg:#1E1A14;--bg2:#2A2318;--bg3:#332B1F;--card:#2E2720;--card2:#3A3028;
-  --text:#F0EAE0;--text2:#B8A898;--text3:#7A6E62;
-  --border:rgba(255,200,130,0.1);--border2:rgba(255,200,130,0.18);
-  --green:#5DBE7A;--red:#E06060;
+  --acc:#4FA8D5;--acc2:#6BBFE8;--sun:#F5C842;--gold:#E8A84A;
+  --bg:#0D1B2A;--bg2:#112236;--bg3:#162C42;--card:#0F1E30;--card2:#132640;
+  --text:#F4FAFF;--text2:#C8E4F4;--text3:#7BB8D4;
+  --border:rgba(79,168,213,0.12);--border2:rgba(79,168,213,0.22);
+  --green:#4DC98A;--red:#E06875;
   --nav-h:64px;--header-h:60px;
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#111}
+html,body{width:100%;height:100%;overflow:hidden;background:#060E16}
 body{font-family:'DM Sans',sans-serif;color:var(--text)}
 #app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;background:var(--bg);position:relative}
 
 .hdr{background:var(--card);height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
-.hdr-logo{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--terra);display:flex;align-items:center;gap:8px}
-.logo-sun{width:24px;height:24px;background:var(--sun);border-radius:50%;flex-shrink:0}
-.w-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:20px;padding:5px 12px;border:1px solid var(--border);cursor:pointer;font-family:'DM Sans',sans-serif}
+.hdr-logo{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--acc2);display:flex;align-items:center;gap:8px}
+.logo-sun{width:22px;height:22px;background:var(--sun);border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(245,200,66,0.4)}
+.w-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:20px;padding:5px 12px;border:1px solid var(--border2);cursor:pointer;font-family:'DM Sans',sans-serif}
 .w-pill .wi{font-size:18px}
 .w-pill .wt{font-size:15px;font-weight:600;color:var(--text)}
 .w-pill .wd{font-size:11px;color:var(--text3)}
@@ -40,36 +40,34 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .nav{background:var(--card);height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);display:flex;align-items:center;border-top:1px solid var(--border);flex-shrink:0;z-index:10}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;background:transparent;cursor:pointer;padding:0;height:100%}
 .nav-lbl{font-size:10px;font-weight:500;color:var(--text3);letter-spacing:.02em}
-.nav-btn.active .nav-lbl{color:var(--terra)}
+.nav-btn.active .nav-lbl{color:var(--acc2)}
 .nav-ico{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .nav-ico svg{width:22px;height:22px;fill:none;stroke:var(--text3);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
-.nav-btn.active .nav-ico svg{stroke:var(--terra)}
+.nav-btn.active .nav-ico svg{stroke:var(--acc2)}
 
 .w-sheet-wrap{position:absolute;inset:0;z-index:50;pointer-events:none;display:flex;flex-direction:column}
 .w-sheet-bg{flex:1;transition:background .25s}
 .w-sheet{background:var(--card2);border-radius:24px 24px 0 0;padding:12px 16px 32px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,1,.32,1);pointer-events:all;border-top:1px solid var(--border2)}
 .w-sheet-wrap.open{pointer-events:all}
-.w-sheet-wrap.open .w-sheet-bg{background:rgba(0,0,0,0.6)}
+.w-sheet-wrap.open .w-sheet-bg{background:rgba(0,0,0,0.65)}
 .w-sheet-wrap.open .w-sheet{transform:translateY(0)}
 .sheet-handle{width:36px;height:4px;background:var(--bg3);border-radius:2px;margin:0 auto 18px}
-.w-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.w-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .w-cell{background:var(--bg3);border-radius:12px;padding:10px 12px;border:1px solid var(--border)}
 .w-cell-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .w-cell-val{font-size:16px;font-weight:500;color:var(--text)}
 .w-hero{display:flex;justify-content:space-between;align-items:center;padding:4px 0 14px}
 .w-hero-icon{font-size:54px;line-height:1;margin-bottom:4px}
 .w-hero-desc{font-size:14px;color:var(--text2)}
-.w-hero-temp{font-family:'Fraunces',serif;font-size:64px;font-weight:300;color:var(--text);line-height:1}
-.w-hero-temp span{font-size:26px;color:var(--text3)}
 .verdict-strip{border-radius:12px;padding:10px 14px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;margin-top:4px}
-.verdict-strip.buena{background:rgba(245,166,35,0.15);color:#F5C060;border:1px solid rgba(245,166,35,0.2)}
-.verdict-strip.regular{background:rgba(91,155,214,0.12);color:#80B8E0;border:1px solid rgba(91,155,214,0.2)}
-.verdict-strip.mala{background:rgba(100,100,120,0.15);color:var(--text2);border:1px solid rgba(150,150,170,0.15)}
+.verdict-strip.buena{background:rgba(245,200,66,0.12);color:#F5D060;border:1px solid rgba(245,200,66,0.2)}
+.verdict-strip.regular{background:rgba(79,168,213,0.12);color:var(--acc2);border:1px solid var(--border2)}
+.verdict-strip.mala{background:rgba(80,100,120,0.2);color:var(--text2);border:1px solid rgba(100,140,170,0.15)}
 
 .hero-banner{margin:12px 12px 0;border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;flex-shrink:0;border:1px solid var(--border2)}
-.hero-banner.sol{background:linear-gradient(135deg,rgba(245,166,35,0.18),rgba(212,132,90,0.12))}
-.hero-banner.parcial{background:linear-gradient(135deg,rgba(91,155,214,0.12),rgba(100,130,180,0.08))}
-.hero-banner.nubes,.hero-banner.lluvia{background:linear-gradient(135deg,rgba(80,100,130,0.15),rgba(60,80,110,0.1))}
+.hero-banner.sol{background:linear-gradient(135deg,rgba(245,200,66,0.14),rgba(232,168,74,0.08))}
+.hero-banner.parcial{background:linear-gradient(135deg,rgba(79,168,213,0.14),rgba(50,120,180,0.08))}
+.hero-banner.nubes,.hero-banner.lluvia{background:linear-gradient(135deg,rgba(30,70,110,0.3),rgba(20,50,80,0.2))}
 .hb-title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:4px}
 .hb-sub{font-size:13px;color:var(--text2)}
 .hb-temp{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:'Fraunces',serif;font-size:52px;font-weight:300;color:var(--text);line-height:1}
@@ -78,23 +76,24 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .quick-filters{display:flex;gap:8px;padding:12px 12px 4px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .quick-filters::-webkit-scrollbar{display:none}
 .qf{background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
-.qf.on{background:var(--terra);color:#fff;border-color:var(--terra)}
+.qf.on{background:var(--acc);color:#0D1B2A;border-color:var(--acc)}
+
 .list-wrap{flex:1;padding:8px 12px 16px;display:flex;flex-direction:column;gap:10px}
 
 .tcard{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:14px;cursor:pointer;position:relative;overflow:hidden;transition:transform .12s,border-color .12s;-webkit-user-select:none;user-select:none}
 .tcard:active{transform:scale(.98)}
-.tcard.soleada{border-color:rgba(245,166,35,0.25)}
-.tcard.parcial{border-color:rgba(91,155,214,0.2)}
+.tcard.soleada{border-color:rgba(245,200,66,0.3)}
+.tcard.parcial{border-color:rgba(79,168,213,0.25)}
 .tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.tcard.soleada::before{background:linear-gradient(90deg,#F5A623,#F7BE6A)}
-.tcard.parcial::before{background:linear-gradient(90deg,#5B9BD6,#8FC0E8)}
+.tcard.soleada::before{background:linear-gradient(90deg,#F5C842,#E8D070)}
+.tcard.parcial::before{background:linear-gradient(90deg,#4FA8D5,#6BBFE8)}
 .tcard.sombra::before{background:var(--bg3)}
 .tc-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
 .tc-name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--text);line-height:1.2;flex:1;margin-right:8px}
 .sun-badge{border-radius:20px;padding:4px 9px;font-size:11px;font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:4px}
-.sun-badge.soleada{background:rgba(245,166,35,0.15);color:#F5C060}
-.sun-badge.parcial{background:rgba(91,155,214,0.15);color:#80B8E0}
-.sun-badge.sombra{background:rgba(120,120,140,0.15);color:var(--text3)}
+.sun-badge.soleada{background:rgba(245,200,66,0.15);color:#F5D060}
+.sun-badge.parcial{background:rgba(79,168,213,0.15);color:var(--acc2)}
+.sun-badge.sombra{background:rgba(60,90,120,0.25);color:var(--text3)}
 .tc-row2{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .obadge{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:500}
 .obadge-dot{width:5px;height:5px;border-radius:50%}
@@ -106,20 +105,24 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .tc-row3{background:var(--bg3);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text2)}
 .sun-bar-wrap{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 .sun-bar{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
-.sun-fill{height:100%;background:linear-gradient(90deg,#F5A623,#F7BE6A);border-radius:3px}
+.sun-fill{height:100%;background:linear-gradient(90deg,#F5C842,#E8D070);border-radius:3px}
 .sb-label{font-size:11px;color:var(--text3)}
 .sb-pct{font-size:12px;font-weight:500;color:var(--text2);min-width:28px;text-align:right}
+.tc-feel-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.tc-feel-lbl{font-size:11px;color:var(--text3)}
+.tc-feel-val{font-size:12px;font-weight:500;color:var(--text2)}
+.dist-badge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:500;background:rgba(79,168,213,0.12);color:var(--acc2)}
 .stars{color:var(--sun);font-size:13px}
 
 .det-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.det-back{display:flex;align-items:center;gap:6px;padding:14px 16px 0;cursor:pointer;font-size:14px;color:var(--terra);font-weight:500}
+.det-back{display:flex;align-items:center;gap:6px;padding:14px 16px 0;cursor:pointer;font-size:14px;color:var(--acc2);font-weight:500}
 .det-hero{padding:12px 16px 16px;border-bottom:1px solid var(--border)}
 .det-name{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:2px}
 .det-sub{font-size:13px;color:var(--text3);margin-bottom:14px}
 .verdict-big{border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start}
-.verdict-big.buena{background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.2)}
-.verdict-big.regular{background:rgba(91,155,214,0.1);border:1px solid rgba(91,155,214,0.2)}
-.verdict-big.mala{background:rgba(100,100,120,0.12);border:1px solid rgba(150,150,170,0.15)}
+.verdict-big.buena{background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.2)}
+.verdict-big.regular{background:rgba(79,168,213,0.1);border:1px solid var(--border2)}
+.verdict-big.mala{background:rgba(60,80,110,0.2);border:1px solid rgba(80,120,160,0.2)}
 .vb-icon{font-size:30px;flex-shrink:0}
 .vb-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px}
 .vb-text{font-size:13px;color:var(--text2);line-height:1.55}
@@ -134,14 +137,13 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .tip-icon{font-size:16px;flex-shrink:0;width:22px}
 .tag{display:inline-block;background:var(--bg3);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text3);margin:4px 4px 0 0;border:1px solid var(--border)}
 
-/* Mapa estático en detalle */
 .loc-map-wrap{width:100%;height:200px;border-radius:14px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border);position:relative;background:var(--bg3)}
 .loc-map-wrap iframe{width:100%;height:100%;border:none;display:block}
-.btn-primary{width:100%;background:var(--terra);color:#fff;border:none;border-radius:14px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
-.btn-primary:active{opacity:.85}
+.btn-group{display:flex;flex-direction:row;gap:6px;margin-top:4px}
+.btn-primary{flex:1;background:var(--acc);color:#0D1B2A;border:none;border-radius:10px;padding:9px 6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;text-align:center}
+.btn-route{background:var(--bg3);color:var(--acc2);border:1px solid var(--border2)}
 .btn-secondary{width:100%;background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:14px;padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
 
-/* MAPA SCREEN */
 .map-screen-inner{display:flex;flex-direction:column;height:100%}
 #mapContainer{flex:1;position:relative;background:var(--bg2)}
 #gmap{width:100%;height:100%;display:none}
@@ -151,43 +153,70 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .map-titem:active{background:var(--bg3)}
 .map-titem:last-child{border-bottom:none}
 .mti-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.mti-dot.soleada{background:#F5A623}
-.mti-dot.parcial{background:#5B9BD6}
+.mti-dot.soleada{background:#F5C842}
+.mti-dot.parcial{background:#4FA8D5}
 .mti-dot.sombra{background:var(--text3)}
 .mti-info{flex:1;min-width:0}
 .mti-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mti-meta{font-size:12px;color:var(--text3)}
-.mti-go{background:var(--terra);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
+.mti-go{background:var(--acc);color:#0D1B2A;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
 .apikey-panel{background:var(--card);border-top:1px solid var(--border);padding:12px 16px 14px;flex-shrink:0}
 .aklbl{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .ak-row{display:flex;gap:8px;align-items:center}
 .ak-row input{flex:1;border:1px solid var(--border2);border-radius:10px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg2);outline:none}
-.ak-row input:focus{border-color:var(--terra)}
+.ak-row input:focus{border-color:var(--acc)}
 .ak-row input::placeholder{color:var(--text3)}
-.ak-row button{background:var(--terra);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.ak-row button{background:var(--acc);color:#0D1B2A;border:none;border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
 
 .search-hdr{padding:10px 12px;flex-shrink:0}
 .search-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border2);border-radius:50px;padding:10px 14px}
 .search-box input{flex:1;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);outline:none}
 .search-box input::placeholder{color:var(--text3)}
-.btn-loc{background:var(--terra);color:#fff;border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.btn-loc{background:var(--acc);color:#0D1B2A;border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 
 .empty{text-align:center;padding:48px 24px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .empty-title{font-size:16px;font-weight:500;color:var(--text2)}
 .empty-sub{font-size:13px;color:var(--text3)}
-.spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--terra);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+.spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-title" content="Terrazas">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0&callback=gmapsReady" async defer></script>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
 <div id="app">
 
   <div class="hdr">
     <div class="hdr-logo">
-      <div class="logo-sun"></div>
+      <svg width="30" height="24" viewBox="0 0 30 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+        <!-- wall left -->
+        <rect x="1" y="13" width="3" height="9" rx="1" fill="#8B6914"/>
+        <!-- wall right -->
+        <rect x="26" y="13" width="3" height="9" rx="1" fill="#8B6914"/>
+        <!-- awning body: alternating red and cream stripes -->
+        <path d="M1 13 L15 4 L29 13 Z" fill="#CC2200"/>
+        <path d="M1 13 L15 4 L29 13 Z" fill="url(#stripes)"/>
+        <!-- stripe overlay (4 cream stripes) -->
+        <clipPath id="awClip"><path d="M1 13 L15 4 L29 13 Z"/></clipPath>
+        <g clip-path="url(#awClip)">
+          <rect x="-2" y="3" width="3.2" height="12" transform="rotate(-0 15 8)" fill="#FDEBBF" opacity="0.85"/>
+          <rect x="4.5" y="3" width="3.2" height="12" fill="#FDEBBF" opacity="0.85"/>
+          <rect x="11.4" y="3" width="3.2" height="12" fill="#FDEBBF" opacity="0.85"/>
+          <rect x="18.3" y="3" width="3.2" height="12" fill="#FDEBBF" opacity="0.85"/>
+          <rect x="25.2" y="3" width="3.2" height="12" fill="#FDEBBF" opacity="0.85"/>
+        </g>
+        <!-- awning front valance scalloped -->
+        <path d="M1 13 Q3.5 16 6 13 Q8.5 16 11 13 Q13.5 16 15 13 Q16.5 16 19 13 Q21.5 16 24 13 Q26.5 16 29 13" fill="#CC2200" stroke="#AA1800" stroke-width="0.5"/>
+        <!-- ridge line -->
+        <line x1="1" y1="13" x2="29" y2="13" stroke="#AA1800" stroke-width="0.6"/>
+        <!-- floor / ground line -->
+        <line x1="1" y1="22" x2="29" y2="22" stroke="#4FA8D5" stroke-width="0.8" stroke-dasharray="2 2"/>
+        <!-- table hint -->
+        <rect x="10" y="18" width="10" height="1.5" rx="0.75" fill="#4FA8D5" opacity="0.6"/>
+        <line x1="12" y1="19.5" x2="12" y2="22" stroke="#4FA8D5" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+        <line x1="18" y1="19.5" x2="18" y2="22" stroke="#4FA8D5" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      </svg>
       Terrazas
     </div>
     <button class="w-pill" onclick="toggleSheet()">
@@ -223,10 +252,10 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
     <div class="screen" id="s-search">
       <div class="search-hdr">
         <div class="search-box">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A6E62" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A7A9B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="sInput" placeholder="Barrio, tipo, nombre..." oninput="doSearch()"/>
           <button class="btn-loc" onclick="getLocation()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.2" stroke-linecap="round"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
           </button>
         </div>
       </div>
@@ -252,7 +281,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
       <div class="map-screen-inner">
         <div id="mapContainer">
           <div class="map-empty" id="mapEmpty">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A6E62" stroke-width="1.4" stroke-linecap="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4A7A9B" stroke-width="1.4" stroke-linecap="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
             <div style="font-size:15px;font-weight:500;color:var(--text2)">Introduce tu API key</div>
             <div style="font-size:13px;color:var(--text3)">para ver el mapa de terrazas</div>
           </div>
@@ -262,7 +291,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
         <div class="apikey-panel">
           <div class="aklbl">Google Maps API Key</div>
           <div class="ak-row">
-            <input type="text" id="apiKeyInput" placeholder="AIza..." autocomplete="off" spellcheck="false"/>
+            <input type="text" id="apiKeyInput" placeholder="AIza..." autocomplete="off" spellcheck="false" value="AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"/>
             <button onclick="applyApiKey()">Activar</button>
           </div>
         </div>
@@ -291,15 +320,14 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
     <div class="w-sheet">
       <div class="sheet-handle"></div>
       <div class="w-hero">
-        <div>
+        <div style="display:flex;align-items:center;gap:14px">
           <div class="w-hero-icon" id="wIcon">&#9728;</div>
           <div class="w-hero-desc" id="wDesc">Cielo despejado</div>
         </div>
-        <div class="w-hero-temp" id="wTemp">--<span>°C</span></div>
       </div>
       <div class="verdict-strip buena" id="wVerdict">Buen día para terraza</div>
       <div class="w-row">
-        <div class="w-cell"><div class="w-cell-lbl">Sensación</div><div class="w-cell-val" id="wFeel">--</div></div>
+        
         <div class="w-cell"><div class="w-cell-lbl">Viento</div><div class="w-cell-val" id="wWind">--</div></div>
         <div class="w-cell"><div class="w-cell-lbl">Humedad</div><div class="w-cell-val" id="wHum">--</div></div>
         <div class="w-cell"><div class="w-cell-lbl">UV</div><div class="w-cell-val" id="wUv">--</div></div>
@@ -312,8 +340,9 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 </div>
 <script>
 var W=null, filt='todas', sfilt='todas', prevScreen='home';
+window.gmapsReady=function(){if(typeof buildMap==='function'){}};
 var lat=39.4699, lon=-0.3763;
-var GKEY='';
+var GKEY='AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0';
 var gmap=null, gmarkers=[], infoWindow=null;
 
 var DB=[
@@ -356,8 +385,6 @@ function applyW(){
   document.getElementById('pDesc').textContent=i.ds.split(' ').slice(0,2).join(' ');
   document.getElementById('wIcon').innerHTML=i.ic;
   document.getElementById('wDesc').textContent=i.ds;
-  document.getElementById('wTemp').innerHTML=t+'<span>°C</span>';
-  document.getElementById('wFeel').textContent=Math.round(W.apparent_temperature)+'°';
   document.getElementById('wWind').textContent=Math.round(W.wind_speed_10m)+' km/h';
   document.getElementById('wHum').textContent=Math.round(W.relative_humidity_2m)+'%';
   document.getElementById('wRain').textContent=(W.precipitation||0).toFixed(1)+' mm';
@@ -373,21 +400,104 @@ function applyW(){
   document.getElementById('heroTemp').innerHTML=t+'<span>°</span>';
 }
 
-function sunAz(){
-  var h=new Date().getHours()+new Date().getMinutes()/60;
-  if(h<7.5||h>20.5) return null;
-  return 90+((h-7.5)/13)*180;
+/* ---- CÁLCULO SOLAR PRECISO (algoritmo NOAA / Jean Meeus) ---- */
+function solarPosition(){
+  var now   = new Date();
+  var lat_r = lat * Math.PI / 180;
+
+  // Día juliano desde la época J2000
+  var JD = now.getTime() / 86400000 + 2440587.5;
+  var n  = JD - 2451545.0;
+
+  // Longitud media del sol (grados)
+  var L = (280.460 + 0.9856474 * n) % 360;
+  if(L < 0) L += 360;
+
+  // Anomalía media (grados)
+  var g   = (357.528 + 0.9856003 * n) % 360;
+  if(g < 0) g += 360;
+  var g_r = g * Math.PI / 180;
+
+  // Longitud eclíptica
+  var lam   = L + 1.915 * Math.sin(g_r) + 0.020 * Math.sin(2 * g_r);
+  var lam_r = lam * Math.PI / 180;
+
+  // Oblicuidad de la eclíptica
+  var eps = (23.439 - 0.0000004 * n) * Math.PI / 180;
+
+  // Declinación solar
+  var dec = Math.asin(Math.sin(eps) * Math.sin(lam_r));
+
+  // Ecuación del tiempo (minutos)
+  var RA  = Math.atan2(Math.cos(eps) * Math.sin(lam_r), Math.cos(lam_r));
+  var EqT = 4 * ((L * Math.PI / 180) - RA) * 180 / Math.PI;
+
+  // Hora UTC en minutos — evita el bug de getTimezoneOffset()
+  var utcMin = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
+
+  // Hora solar verdadera (UTC + corrección longitud + ecuación del tiempo)
+  var solarTime = utcMin + EqT + lon * 4;
+
+  // Ángulo horario (0° al mediodía solar, positivo por la tarde)
+  var hourAngle = (solarTime / 4 - 180) * Math.PI / 180;
+
+  // Elevación solar
+  var cosCenital = Math.sin(lat_r) * Math.sin(dec) +
+                   Math.cos(lat_r) * Math.cos(dec) * Math.cos(hourAngle);
+  var elevacion  = Math.asin(Math.max(-1, Math.min(1, cosCenital))) * 180 / Math.PI;
+
+  if(elevacion <= 0) return null; // sol bajo el horizonte
+
+  // Azimut solar (0°=N, 90°=E, 180°=S, 270°=O)
+  var cosElev = Math.cos(elevacion * Math.PI / 180);
+  if(cosElev < 0.0001) return { az: 180, elev: elevacion };
+  var sinAz = Math.max(-1, Math.min(1,
+    -Math.cos(dec) * Math.sin(hourAngle) / cosElev
+  ));
+  var az = Math.asin(sinAz) * 180 / Math.PI;
+  if(Math.cos(hourAngle) < Math.tan(dec) / Math.tan(lat_r)){
+    az = 180 - az;
+  }
+  az = (az + 360) % 360;
+
+  return { az: az, elev: elevacion };
 }
-function sunExp(o,cloud,tipo){
-  if(tipo==='lluvia') return {n:0,txt:'Lluvia',cls:'sombra'};
-  var az=sunAz(); if(!az) return {n:0,txt:'Sin sol',cls:'sombra'};
-  var om={N:0,NE:45,E:90,SE:135,S:180,SO:225,O:270,NO:315};
-  var ta=om[o]||180, diff=Math.abs(az-ta);
-  if(diff>180) diff=360-diff;
-  var n=Math.round(Math.max(0,1-diff/110)*(1-(cloud||0)/150)*100);
-  if(n>=60) return {n:n,txt:'Sol directo',cls:'soleada'};
-  if(n>=25) return {n:n,txt:'Sol parcial',cls:'parcial'};
-  return {n:n,txt:'A la sombra',cls:'sombra'};
+
+function sunExp(o, cloud, tipo){
+  if(tipo === 'lluvia') return {n:0, txt:'Lluvia', cls:'sombra'};
+
+  var sol = solarPosition();
+  if(!sol) return {n:0, txt:'Sin sol', cls:'sombra'};
+
+  var om = {N:0, NE:45, E:90, SE:135, S:180, SO:225, O:270, NO:315};
+  var ta = om[o] !== undefined ? om[o] : 180;
+
+  // Diferencia angular entre azimut del sol y orientación de la terraza
+  var diff = Math.abs(sol.az - ta);
+  if(diff > 180) diff = 360 - diff;
+
+  // Factor de incidencia angular (coseno del ángulo de incidencia)
+  var angularFactor = Math.max(0, Math.cos(diff * Math.PI / 180));
+
+  // Factor de elevación: el sol bajo (<15°) aporta poca luz útil en terraza
+  var elevFactor = Math.min(1, sol.elev / 20);
+
+  // Factor de nubosidad
+  var cloudFactor = 1 - (cloud || 0) / 100 * 0.85;
+
+  var n = Math.round(angularFactor * elevFactor * cloudFactor * 100);
+  n = Math.max(0, Math.min(100, n));
+
+  if(n >= 55) return {n:n, txt:'Sol directo', cls:'soleada'};
+  if(n >= 20) return {n:n, txt:'Sol parcial', cls:'parcial'};
+  return {n:n, txt:'A la sombra', cls:'sombra'};
+}
+function feelAdj(sunPct){
+  // Ajuste radiante por sol directo sobre la piel (hasta +4°C con sol pleno)
+  var base = W ? W.apparent_temperature : null;
+  if(base === null) return null;
+  var extra = Math.round((sunPct / 100) * 4 * 10) / 10;
+  return Math.round((base + extra) * 10) / 10;
 }
 function isOp(t){var h=new Date().getHours(); return t.h.c>t.h.a?h>=t.h.a&&h<t.h.c:h>=t.h.a||h<t.h.c;}
 function stars(r){var s=''; for(var i=0;i<Math.floor(r);i++) s+='&#9733;'; if(r%1>=.5) s+='½'; for(var i=0;i<5-Math.floor(r)-(r%1>=.5?1:0);i++) s+='&#9734;'; return s;}
@@ -403,17 +513,25 @@ function cardHTML(t){
     +'<div class="sun-badge '+sun.cls+'">'+sunIco+' '+sun.txt+'</div></div>'
     +'<div class="tc-row2">'
     +'<span class="obadge '+(op?'op':'cl')+'"><span class="obadge-dot"></span>'+(op?'Abierto':'Cerrado')+'</span>'
+    +'<span class="dist-badge">'+fmtDist(distKm(t))+'</span>'
     +'<span class="tc-meta"><span class="stars">'+st+'</span> '+t.r+' · '+t.z+'</span>'
     +'</div>'
     +'<div class="tc-row3">'+(cond.length?cond.join(' · '):'Terraza al aire libre')+'</div>'
     +'<div class="sun-bar-wrap"><span class="sb-label">Sol ahora:</span>'
     +'<div class="sun-bar"><div class="sun-fill" style="width:'+sun.n+'%"></div></div>'
     +'<span class="sb-pct">'+sun.n+'%</span></div>'
+    +'<div class="tc-feel-row">'
+    +'<span class="tc-feel-lbl">Sensación térmica</span>'
+    +'<span class="tc-feel-val">'+(feelAdj(sun.n)!==null?feelAdj(sun.n)+'°C':'--')+'</span>'
+    +'</div>'
     +'</div>';
 }
 
+var RADIUS_KM = 2;
+
 function filtered(f,q){
   return DB.filter(function(t){
+    if(distKm(t) > RADIUS_KM) return false;
     var mq=!q||t.n.toLowerCase().indexOf(q)>=0||t.z.toLowerCase().indexOf(q)>=0||t.tags.some(function(g){return g.toLowerCase().indexOf(q)>=0;});
     var sun=sunExp(t.o,cl(),tp()), op=isOp(t);
     if(f==='sol') return mq&&sun.cls==='soleada';
@@ -425,21 +543,35 @@ function filtered(f,q){
   });
 }
 
+function distKm(t){
+  var R=6371;
+  var dLat=(t.lat-lat)*Math.PI/180;
+  var dLon=(t.lng-lon)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat*Math.PI/180)*Math.cos(t.lat*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function sortByDist(l){
+  return l.slice().sort(function(a,b){return distKm(a)-distKm(b);});
+}
+function fmtDist(km){
+  if(km<1) return Math.round(km*1000)+'m';
+  return km.toFixed(1)+'km';
+}
+
 function renderHome(){
-  var l=filtered(filt,''), el=document.getElementById('homeList');
-  el.innerHTML=l.length?l.map(cardHTML).join(''):'<div class="empty"><div class="empty-title">Sin resultados</div></div>';
+  var l=sortByDist(filtered(filt,'')), el=document.getElementById('homeList');
+  el.innerHTML=l.length?l.map(cardHTML).join(''):'<div class="empty"><div class="empty-title">Sin resultados en 2 km</div><div class="empty-sub">No hay terrazas cerca de tu ubicación</div></div>';
 }
 function renderSearch(){
-  var q=document.getElementById('sInput').value.toLowerCase(), l=filtered(sfilt,q);
+  var q=document.getElementById('sInput').value.toLowerCase(), l=sortByDist(filtered(sfilt,q));
   document.getElementById('searchCount').textContent=l.length+' terraza'+(l.length!==1?'s':'');
   var el=document.getElementById('searchList');
-  el.innerHTML=l.length?l.map(cardHTML).join(''):'<div class="empty"><div class="empty-title">Sin resultados</div></div>';
+  el.innerHTML=l.length?l.map(cardHTML).join(''):'<div class="empty"><div class="empty-title">Sin resultados en 2 km</div><div class="empty-sub">No hay terrazas cerca de tu ubicación</div></div>';
 }
 function setF(f,btn){filt=f; document.querySelectorAll('#s-home .qf').forEach(function(b){b.classList.remove('on');}); btn.classList.add('on'); renderHome();}
 function setSF(f,btn){sfilt=f; document.querySelectorAll('#s-search .qf').forEach(function(b){b.classList.remove('on');}); btn.classList.add('on'); renderSearch();}
 function doSearch(){renderSearch();}
 
-/* ---- DETAIL ---- */
 function showDetail(id){
   var t=DB.find(function(x){return x.id===id;}); if(!t) return;
   var sun=sunExp(t.o,cl(),tp()), op=isOp(t), st=stars(t.r);
@@ -460,14 +592,6 @@ function showDetail(id){
   var temp=W?Math.round(W.temperature_2m):'--', feel=W?Math.round(W.apparent_temperature):'--', wind=W?Math.round(W.wind_speed_10m):'--';
   prevScreen=document.querySelector('.screen.active').id.replace('s-','');
 
-  /* Mapa estático con solo el pin de la terraza */
-  var mapSection='<div class="det-section">'
-    +'<div class="det-stitle">Ubicación</div>'
-    +'<div class="loc-map-wrap" id="locMapWrap"></div>'
-    +'<button class="btn-primary" onclick="openGMaps('+t.lat+','+t.lng+')">Abrir en Google Maps</button>'
-    +'<button class="btn-secondary" onclick="openWaze('+t.lat+','+t.lng+')">Abrir en Waze</button>'
-    +'</div>';
-
   document.getElementById('detContent').innerHTML=
     '<div class="det-back" onclick="goBack()">&#8592; Volver</div>'
     +'<div class="det-hero">'
@@ -475,11 +599,20 @@ function showDetail(id){
     +'<div class="det-sub">'+t.t.charAt(0).toUpperCase()+t.t.slice(1)+' · '+t.z+' · '+t.dir+'</div>'
     +'<div class="verdict-big '+vc+'"><div class="vb-icon">'+vi+'</div><div><div class="vb-title">'+vt+'</div><div class="vb-text">'+vd+'</div></div></div>'
     +'</div>'
-    +mapSection
+    +'<div class="det-section">'
+    +'<div class="det-stitle">Ubicación</div>'
+    +'<div class="loc-map-wrap" id="locMapWrap"></div>'
+    +'<div class="btn-group">'
+    +'<button class="btn-primary" onclick="openGMaps('+t.lat+','+t.lng+')">Google Maps</button>'
+    +'<button class="btn-primary" onclick="openStreetView('+t.lat+','+t.lng+')">Street View</button>'
+    +'<button class="btn-primary btn-route" onclick="openRoute('+t.lat+','+t.lng+')">Cómo llegar</button>'
+    +'</div>'
+    
+    +'</div>'
     +'<div class="det-section">'
     +'<div class="det-stitle">Condiciones ahora</div>'
     +'<div class="det-row"><span class="det-row-lbl">Sol en terraza</span><span class="det-row-val">'+sun.txt+' ('+sun.n+'%)</span></div>'
-    +'<div class="det-row"><span class="det-row-lbl">Temperatura</span><span class="det-row-val">'+temp+'°C · Sensación '+feel+'°C</span></div>'
+    +'<div class="det-row"><span class="det-row-lbl">Temperatura</span><span class="det-row-val">'+temp+'°C · Sensación '+(feelAdj(sun.n)!==null?feelAdj(sun.n):'--')+'°C</span></div>'
     +'<div class="det-row"><span class="det-row-lbl">Viento</span><span class="det-row-val">'+wind+' km/h '+(windOk?'&#9989;':'&#9888;')+'</span></div>'
     +'<div class="det-row"><span class="det-row-lbl">Estado</span><span class="det-row-val"><span class="obadge '+(op?'op':'cl')+'"><span class="obadge-dot"></span>'+(op?'Abierto':'Cerrado · Abre '+t.h.a+'h')+'</span></span></div>'
     +'</div>'
@@ -499,46 +632,38 @@ function showDetail(id){
   setTimeout(function(){loadLocMap(t);}, 200);
 }
 
-/* Mapa con solo el pin, sin ruta */
 function loadLocMap(t){
   var wrap=document.getElementById('locMapWrap'); if(!wrap) return;
-  if(GKEY){
-    /* Google Maps embebido con solo el marcador */
-    if(window.google&&window.google.maps){
-      wrap.innerHTML='<div id="locMapDiv" style="width:100%;height:100%"></div>';
-      var m=new google.maps.Map(document.getElementById('locMapDiv'),{
-        center:{lat:t.lat,lng:t.lng}, zoom:16, disableDefaultUI:true,
-        styles:[
-          {elementType:'geometry',stylers:[{color:'#2A2318'}]},
-          {elementType:'labels.text.fill',stylers:[{color:'#B8A898'}]},
-          {elementType:'labels.text.stroke',stylers:[{color:'#1E1A14'}]},
-          {featureType:'road',elementType:'geometry',stylers:[{color:'#3A3028'}]},
-          {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#42372A'}]},
-          {featureType:'water',elementType:'geometry',stylers:[{color:'#1A2A3A'}]},
-          {featureType:'poi',stylers:[{visibility:'off'}]},
-          {featureType:'transit',stylers:[{visibility:'off'}]}
-        ]
-      });
-      new google.maps.Marker({
-        position:{lat:t.lat,lng:t.lng}, map:m, title:t.n,
-        icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:'#D4845A',fillOpacity:1,strokeColor:'#fff',strokeWeight:2.5}
-      });
-    } else {
-      /* API key guardada pero Maps aún no cargado: usar iframe embed */
-      wrap.innerHTML='<iframe src="https://www.google.com/maps/embed/v1/place?key='+GKEY+'&q='+t.lat+','+t.lng+'&zoom=16" allowfullscreen></iframe>';
-    }
+  if(GKEY && window.google && window.google.maps){
+    wrap.innerHTML='<div id="locMapDiv" style="width:100%;height:100%"></div>';
+    var m=new google.maps.Map(document.getElementById('locMapDiv'),{
+      center:{lat:t.lat,lng:t.lng}, zoom:16, disableDefaultUI:true,
+      styles:[
+        {elementType:'geometry',stylers:[{color:'#112236'}]},
+        {elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},
+        {elementType:'labels.text.stroke',stylers:[{color:'#0D1B2A'}]},
+        {featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},
+        {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#1C3550'}]},
+        {featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},
+        {featureType:'poi',stylers:[{visibility:'off'}]},
+        {featureType:'transit',stylers:[{visibility:'off'}]}
+      ]
+    });
+    new google.maps.Marker({
+      position:{lat:t.lat,lng:t.lng}, map:m, title:t.n,
+      icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:'#4FA8D5',fillOpacity:1,strokeColor:'#E8F4FC',strokeWeight:2.5}
+    });
+  } else if(GKEY){
+    wrap.innerHTML='<iframe src="https://www.google.com/maps/embed/v1/place?key='+GKEY+'&q='+t.lat+','+t.lng+'&zoom=16" allowfullscreen></iframe>';
   } else {
-    /* Sin API key: iframe de OpenStreetMap gratuito */
     var delta=0.004;
     var bbox=(t.lng-delta)+','+(t.lat-delta)+','+(t.lng+delta)+','+(t.lat+delta);
     wrap.innerHTML='<iframe src="https://www.openstreetmap.org/export/embed.html?bbox='+bbox+'&layer=mapnik&marker='+t.lat+','+t.lng+'" allowfullscreen></iframe>';
   }
 }
 
-/* ---- GOOGLE MAPS (pantalla Mapa) ---- */
 function applyApiKey(){
-  var k=document.getElementById('apiKeyInput').value.trim();
-  if(!k) return;
+  var k=document.getElementById('apiKeyInput').value.trim(); if(!k) return;
   GKEY=k; localStorage.setItem('gkey',k); initGoogleMap();
 }
 function loadSavedKey(){
@@ -554,8 +679,7 @@ function initGoogleMap(){
   s.src='https://maps.googleapis.com/maps/api/js?key='+GKEY+'&callback=buildMap';
   s.async=true; s.defer=true;
   s.onerror=function(){
-    var me=document.getElementById('mapEmpty');
-    me.style.display='flex';
+    var me=document.getElementById('mapEmpty'); me.style.display='flex';
     me.innerHTML='<div style="font-size:15px;font-weight:500;color:var(--red)">API key inválida</div><div style="font-size:13px;color:var(--text3)">Comprueba la clave e inténtalo de nuevo</div>';
     document.getElementById('gmap').style.display='none';
   };
@@ -565,12 +689,12 @@ window.buildMap=function(){
   gmap=new google.maps.Map(document.getElementById('gmap'),{
     center:{lat:39.4699,lng:-0.3763}, zoom:13, disableDefaultUI:true,
     styles:[
-      {elementType:'geometry',stylers:[{color:'#2A2318'}]},
-      {elementType:'labels.text.fill',stylers:[{color:'#B8A898'}]},
-      {elementType:'labels.text.stroke',stylers:[{color:'#1E1A14'}]},
-      {featureType:'road',elementType:'geometry',stylers:[{color:'#3A3028'}]},
-      {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#42372A'}]},
-      {featureType:'water',elementType:'geometry',stylers:[{color:'#1A2A3A'}]},
+      {elementType:'geometry',stylers:[{color:'#112236'}]},
+      {elementType:'labels.text.fill',stylers:[{color:'#8FB8D4'}]},
+      {elementType:'labels.text.stroke',stylers:[{color:'#0D1B2A'}]},
+      {featureType:'road',elementType:'geometry',stylers:[{color:'#1C3550'}]},
+      {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#243F5E'}]},
+      {featureType:'water',elementType:'geometry',stylers:[{color:'#0A1928'}]},
       {featureType:'poi',stylers:[{visibility:'off'}]},
       {featureType:'transit',stylers:[{visibility:'off'}]}
     ]
@@ -579,10 +703,10 @@ window.buildMap=function(){
   gmarkers=[];
   DB.forEach(function(t){
     var sun=sunExp(t.o,cl(),tp());
-    var color=sun.cls==='soleada'?'#F5A623':sun.cls==='parcial'?'#5B9BD6':'#7A6E62';
+    var color=sun.cls==='soleada'?'#F5C842':sun.cls==='parcial'?'#4FA8D5':'#4A7A9B';
     var marker=new google.maps.Marker({
       position:{lat:t.lat,lng:t.lng}, map:gmap, title:t.n,
-      icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:color,fillOpacity:1,strokeColor:'#1E1A14',strokeWeight:2}
+      icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:color,fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2}
     });
     marker.addListener('click',function(){
       var op=isOp(t); var s2=sunExp(t.o,cl(),tp());
@@ -590,20 +714,19 @@ window.buildMap=function(){
         '<div style="font-family:DM Sans,sans-serif;padding:4px;min-width:160px">'
         +'<div style="font-weight:600;font-size:14px;margin-bottom:3px">'+t.n+'</div>'
         +'<div style="font-size:12px;color:#888;margin-bottom:6px">'+t.z+'</div>'
-        +'<div style="font-size:12px;margin-bottom:8px">'+s2.txt+' · '+(op?'<span style="color:#5DBE7A">Abierto</span>':'<span style="color:#E06060">Cerrado</span>')+'</div>'
-        +'<button onclick="showDetailFromMap('+t.id+')" style="background:#D4845A;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;width:100%">Ver detalle</button>'
+        +'<div style="font-size:12px;margin-bottom:8px">'+s2.txt+' · '+(op?'<span style="color:#4DC98A">Abierto</span>':'<span style="color:#E06875">Cerrado</span>')+'</div>'
+        +'<button onclick="showDetailFromMap('+t.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;width:100%;font-weight:500">Ver detalle</button>'
         +'</div>'
       );
       infoWindow.open(gmap,marker);
     });
     gmarkers.push({marker:marker,id:t.id});
   });
-  /* Pin de ubicación del usuario */
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(p){
       new google.maps.Marker({
         position:{lat:p.coords.latitude,lng:p.coords.longitude}, map:gmap, title:'Tu ubicación',
-        icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#5B9BD6',fillOpacity:1,strokeColor:'#1E1A14',strokeWeight:2.5}
+        icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
       });
     });
   }
@@ -632,8 +755,11 @@ function focusMarker(id){
 function openGMaps(tlat,tlng){
   window.open('https://www.google.com/maps/search/?api=1&query='+tlat+','+tlng,'_blank');
 }
-function openWaze(tlat,tlng){
-  window.open('https://waze.com/ul?ll='+tlat+','+tlng+'&navigate=yes','_blank');
+function openStreetView(tlat,tlng){
+  window.open('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+tlat+','+tlng,'_blank');
+}
+function openRoute(tlat,tlng){
+  window.open('https://www.google.com/maps/dir/?api=1&origin='+lat+','+lon+'&destination='+tlat+','+tlng+'&travelmode=walking','_blank');
 }
 
 function goTo(s){
@@ -646,26 +772,22 @@ function goTo(s){
 }
 function goBack(){goTo(prevScreen);}
 function toggleSheet(){document.getElementById('wSheet').classList.toggle('open');}
-
 function getLocation(){
   if(navigator.geolocation) navigator.geolocation.getCurrentPosition(
-    function(p){lat=p.coords.latitude; lon=p.coords.longitude; loadW();},
+    function(p){lat=p.coords.latitude; lon=p.coords.longitude; loadW(); renderHome(); renderSearch(); renderMapList();},
     function(){}
   );
 }
 
-loadSavedKey();
+// API key fija en el build
+GKEY = 'AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0';
+localStorage.setItem('gkey', GKEY);
+document.getElementById('apiKeyInput').value = GKEY;
 setInterval(loadW,600000);
 loadW();
 renderMapList();
+initGoogleMap();
 </script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  });
-}
-</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});</script>
 </body>
 </html>
