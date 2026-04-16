@@ -115,9 +115,11 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .tc-feel-val{font-size:12px;font-weight:500;color:var(--text2)}
 .stars{color:var(--sun);font-size:13px}
 
-.det-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.det-back{display:flex;align-items:center;gap:6px;padding:14px 16px 0;cursor:pointer;font-size:14px;color:var(--acc2);font-weight:500}
-.det-hero{padding:12px 16px 16px;border-bottom:1px solid var(--border)}
+.det-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:0}
+.det-back{display:none}
+.det-back-float{position:absolute;top:12px;left:12px;z-index:30;display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border2);border-radius:50px;padding:7px 14px 7px 10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--acc2);box-shadow:0 2px 12px rgba(0,0,0,0.35)}
+.det-back-float:active{opacity:.8}
+.det-hero{padding:52px 16px 16px;border-bottom:1px solid var(--border)}
 .det-name{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:2px}
 .det-sub{font-size:13px;color:var(--text3);margin-bottom:14px}
 .verdict-big{border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start}
@@ -152,6 +154,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .map-list{flex-shrink:0;background:var(--card);border-top:1px solid var(--border);max-height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .map-titem{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer}
 .map-titem:active{background:var(--bg3)}
+.map-titem.highlighted{background:rgba(79,168,213,0.12);border-left:3px solid var(--acc2)}
 .map-titem:last-child{border-bottom:none}
 .mti-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .mti-dot.soleada{background:#F5C842}
@@ -255,6 +258,10 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
     </div>
 
     <div class="screen" id="s-detail">
+      <button class="det-back-float" onclick="goBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </button>
       <div class="det-scroll" id="detContent"></div>
     </div>
 
@@ -498,7 +505,7 @@ function showDetail(id) {
   }
 
   document.getElementById('detContent').innerHTML =
-    '<div class="det-back" onclick="goBack()">&#8592; Volver</div>'
+    ''
     +'<div class="det-hero"><div class="det-name">'+t.n+'</div>'
     +'<div class="det-sub">'+t.t.charAt(0).toUpperCase()+t.t.slice(1)+' · '+t.z+' · '+t.dir+'</div>'
     +'<div class="verdict-big '+vc+'"><div class="vb-icon">'+vi+'</div><div><div class="vb-title">'+vt+'</div><div class="vb-text">'+vd+'</div></div></div></div>'
@@ -540,16 +547,26 @@ function showDetail(id) {
           position:{lat:other.lat,lng:other.lng}, map:detMap, title:other.n,
           icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:col,fillOpacity:0.85,strokeColor:'#0D1B2A',strokeWeight:1.5}
         });
-        m2.addListener('click', function(){
-          detInfoWindow.setContent(
-            '<div style="font-family:DM Sans,sans-serif;padding:4px;min-width:140px">'
-            +'<div style="font-weight:600;font-size:13px;margin-bottom:3px">'+other.n+'</div>'
-            +'<div style="font-size:11px;color:#888;margin-bottom:6px">'+other.z+'</div>'
-            +'<button onclick="showDetail('+other.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-family:inherit;cursor:pointer;width:100%;font-weight:500">Ver detalle</button>'
-            +'</div>'
-          );
-          detInfoWindow.open(detMap, m2);
-        });
+        (function(marker, place){
+          marker.addListener('click', function(){
+            var s3  = sunExp(place.o, cl(), tp());
+            var op3 = isOp(place);
+            var sunColor = s3.cls==='soleada'?'#F5C842':s3.cls==='parcial'?'#4FA8D5':'#9BB8CC';
+            var opColor  = op3 ? '#4DC98A' : '#E06875';
+            detInfoWindow.setContent(
+              '<div style="font-family:DM Sans,sans-serif;padding:6px 4px 4px;min-width:180px;background:#0F1E30;color:#F4FAFF;border-radius:4px">'
+              +'<div style="font-weight:600;font-size:13px;margin-bottom:3px;color:#F4FAFF">'+place.n+'</div>'
+              +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
+              +'<div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;font-weight:500">'
+                +'<span style="color:'+sunColor+'">&#9728; '+s3.n+'% sol</span>'
+                +'<span style="color:'+opColor+'">'+(op3?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
+              +'</div>'
+              +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:7px 0;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;width:100%;font-weight:600">Ver detalle</button>'
+              +'</div>'
+            );
+            detInfoWindow.open(detMap, marker);
+          });
+        })(m2, other);
       });
 
       // Chincheta para la terraza seleccionada
@@ -622,7 +639,11 @@ window.mapsCallback = function() {
   infoWindow = new google.maps.InfoWindow();
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(p){
-      new google.maps.Marker({position:{lat:p.coords.latitude,lng:p.coords.longitude},map:gmap,title:'Tu ubicación',icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}});
+      new google.maps.Marker({
+        position:{lat:p.coords.latitude,lng:p.coords.longitude},
+        map:gmap,
+        title:'Tu ubicación'
+      });
     });
   }
   loadPlaces();
@@ -706,12 +727,45 @@ function buildMarkers() {
       position:{lat:t.lat,lng:t.lng}, map:gmap, title:t.n,
       icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:color,fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2}
     });
-    marker.addListener('click', function(){
-      var op=isOp(t), s2=sunExp(t.o,cl(),tp());
-      infoWindow.setContent('<div style="font-family:DM Sans,sans-serif;padding:4px;min-width:160px"><div style="font-weight:600;font-size:14px;margin-bottom:3px">'+t.n+'</div><div style="font-size:12px;color:#888;margin-bottom:6px">'+t.z+'</div><div style="font-size:12px;margin-bottom:8px">'+s2.txt+' · '+(op?'<span style="color:#4DC98A">Abierto</span>':'<span style="color:#E06875">Cerrado</span>')+'</div><button onclick="showDetail('+t.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;width:100%;font-weight:500">Ver detalle</button></div>');
-      infoWindow.open(gmap,marker);
-    });
+    (function(mk, place){
+      mk.addListener('click', function(){
+        var op=isOp(place), s2=sunExp(place.o,cl(),tp());
+        var sunColor = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#9BB8CC';
+        var opColor  = op?'#4DC98A':'#E06875';
+        infoWindow.setContent(
+          '<div style="font-family:DM Sans,sans-serif;padding:6px 4px 4px;min-width:180px;background:#0F1E30;color:#F4FAFF;border-radius:4px">'
+          +'<div style="font-weight:600;font-size:14px;margin-bottom:3px;color:#F4FAFF">'+place.n+'</div>'
+          +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
+          +'<div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;font-weight:500">'
+            +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'% sol</span>'
+            +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
+          +'</div>'
+          +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:7px 0;font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;width:100%;font-weight:600">Ver detalle</button>'
+          +'</div>'
+        );
+        infoWindow.open(gmap, mk);
+        highlightMapListItem(place.id);
+      });
+    })(marker, t);
     gmarkers.push({marker:marker, id:t.id});
+  });
+}
+
+function highlightMapListItem(id) {
+  // Remove previous highlight
+  document.querySelectorAll('.map-titem.highlighted').forEach(function(el){
+    el.classList.remove('highlighted');
+  });
+  // Find and highlight the item
+  var list = document.getElementById('mapList');
+  if (!list) return;
+  var items = list.querySelectorAll('.map-titem');
+  items.forEach(function(item, idx) {
+    if (DB[idx] && DB[idx].id === id) {
+      item.classList.add('highlighted');
+      // Scroll the list to show the item
+      item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   });
 }
 
@@ -781,6 +835,7 @@ function goTo(s){
   document.getElementById('s-'+s).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   var nb=document.getElementById('nb-'+s); if(nb) nb.classList.add('active');
+  if(s==='search') setTimeout(function(){ var el=document.getElementById('sInput'); el.readOnly=true; el.focus(); el.readOnly=false; }, 200);
 
 }
 function goBack(){ goTo(prevScreen); }
