@@ -177,6 +177,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .empty-sub{font-size:13px;color:var(--text3)}
 .spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* Eliminar fondo blanco del InfoWindow de Google Maps */
+.gm-style .gm-style-iw-c{background:transparent!important;box-shadow:none!important;padding:0!important;border-radius:10px!important;max-width:220px!important}
+.gm-style .gm-style-iw-d{overflow:hidden!important;padding:0!important}
+.gm-style .gm-style-iw-t::after{display:none!important}
+.gm-style .gm-style-iw-tc{display:none!important}
+.gm-style button.gm-ui-hover-effect{display:none!important}
 .scroll-top{position:absolute;bottom:80px;right:16px;width:44px;height:44px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
 .scroll-top.visible{opacity:1;pointer-events:all}
 .scroll-top:active{transform:scale(.92)}
@@ -586,12 +592,25 @@ function showDetail(id) {
 
       // Pin ubicación usuario
       if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(p){
-          new google.maps.Marker({
-            position:{lat:p.coords.latitude,lng:p.coords.longitude}, map:detMap, title:'Tu ubicación',
-            icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#6BBFE8',fillOpacity:1,strokeColor:'#0D1B2A',strokeWeight:2.5}
-          });
-        });
+        navigator.geolocation.watchPosition(function(p){
+          var uPos={lat:p.coords.latitude,lng:p.coords.longitude};
+          if(!window._detUserMarker){
+            window._detUserMarker=new google.maps.Marker({position:uPos,map:detMap,title:'Tu ubicación',icon:buildUserIcon(window._detUserHeading||0),zIndex:500});
+          } else {
+            window._detUserMarker.setPosition(uPos);
+            window._detUserMarker.setIcon(buildUserIcon(window._detUserHeading||0));
+          }
+        },{enableHighAccuracy:true});
+        function onDetOri(e){
+          var h=e.webkitCompassHeading||(e.alpha?360-e.alpha:0);
+          window._detUserHeading=h;
+          if(window._detUserMarker) window._detUserMarker.setIcon(buildUserIcon(h));
+        }
+        if(window.DeviceOrientationEvent){
+          if(typeof DeviceOrientationEvent.requestPermission==='function'){
+            DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')window.addEventListener('deviceorientation',onDetOri);}).catch(function(){});
+          } else { window.addEventListener('deviceorientation',onDetOri); }
+        }
       }
     }, 200);
   }
@@ -630,6 +649,35 @@ function setStatus(msg) {
   }
 }
 
+function buildUserIcon(heading) {
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">'
+    // Cono de orientación difuminado
+    + '<defs>'
+    +   '<radialGradient id="hg" cx="50%" cy="100%" r="80%">'
+    +     '<stop offset="0%" stop-color="#62C8FF" stop-opacity="0.5"/>'
+    +     '<stop offset="100%" stop-color="#62C8FF" stop-opacity="0"/>'
+    +   '</radialGradient>'
+    +   '<radialGradient id="bg" cx="50%" cy="50%" r="50%">'
+    +     '<stop offset="0%" stop-color="#fff" stop-opacity="0.9"/>'
+    +     '<stop offset="40%" stop-color="#62C8FF" stop-opacity="0.9"/>'
+    +     '<stop offset="100%" stop-color="#1A8FD1" stop-opacity="0.3"/>'
+    +   '</radialGradient>'
+    + '</defs>'
+    // Cono de dirección
+    + '<path d="M24 24 L18 4 L24 8 L30 4 Z" fill="url(#hg)" transform="rotate(' + heading + ' 24 24)"/>'
+    // Halo difuminado exterior
+    + '<circle cx="24" cy="24" r="16" fill="#62C8FF" fill-opacity="0.18"/>'
+    // Punto azul claro con degradado
+    + '<circle cx="24" cy="24" r="10" fill="url(#bg)" stroke="#1A8FD1" stroke-width="2"/>'
+    + '<circle cx="24" cy="24" r="4" fill="#fff" fill-opacity="0.9"/>'
+    + '</svg>';
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    scaledSize: new google.maps.Size(48, 48),
+    anchor: new google.maps.Point(24, 24)
+  };
+}
+
 window.mapsCallback = function() {
   setStatus('Conectando con Google Places...');
   var mapEl = document.getElementById('gmap');
@@ -638,13 +686,38 @@ window.mapsCallback = function() {
   gmap = new google.maps.Map(mapEl, {center:{lat:39.4699,lng:-0.3763}, zoom:13, disableDefaultUI:true});
   infoWindow = new google.maps.InfoWindow();
   if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(p){
-      new google.maps.Marker({
-        position:{lat:p.coords.latitude,lng:p.coords.longitude},
-        map:gmap,
-        title:'Tu ubicación'
-      });
-    });
+    navigator.geolocation.watchPosition(function(p){
+      var userPos = {lat:p.coords.latitude, lng:p.coords.longitude};
+      if(!window._mainUserMarker){
+        window._mainUserMarker = new google.maps.Marker({
+          position: userPos,
+          map: gmap,
+          title: 'Tu ubicación',
+          icon: buildUserIcon(window._mainUserHeading||0),
+          zIndex: 500
+        });
+      } else {
+        window._mainUserMarker.setPosition(userPos);
+        window._mainUserMarker.setIcon(buildUserIcon(window._mainUserHeading||0));
+      }
+    }, null, {enableHighAccuracy:true});
+
+    function handleMainOrientation(e){
+      var heading = e.webkitCompassHeading || (e.alpha ? 360 - e.alpha : 0);
+      window._mainUserHeading = heading;
+      if(window._mainUserMarker){
+        window._mainUserMarker.setIcon(buildUserIcon(heading));
+      }
+    }
+    if(window.DeviceOrientationEvent){
+      if(typeof DeviceOrientationEvent.requestPermission==='function'){
+        DeviceOrientationEvent.requestPermission().then(function(r){
+          if(r==='granted') window.addEventListener('deviceorientation', handleMainOrientation);
+        }).catch(function(){});
+      } else {
+        window.addEventListener('deviceorientation', handleMainOrientation);
+      }
+    }
   }
   loadPlaces();
 };
@@ -733,14 +806,15 @@ function buildMarkers() {
         var sunColor = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#9BB8CC';
         var opColor  = op?'#4DC98A':'#E06875';
         infoWindow.setContent(
-          '<div style="font-family:DM Sans,sans-serif;padding:6px 4px 4px;min-width:180px;background:#0F1E30;color:#F4FAFF;border-radius:4px">'
-          +'<div style="font-weight:600;font-size:14px;margin-bottom:3px;color:#F4FAFF">'+place.n+'</div>'
+          '<div style="font-family:DM Sans,sans-serif;padding:8px 8px 6px;min-width:190px;background:#0F1E30;color:#F4FAFF;border-radius:8px">'
+          +'<div style="font-weight:600;font-size:13px;margin-bottom:2px;color:#F4FAFF">'+place.n+'</div>'
           +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
-          +'<div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;font-weight:500">'
-            +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'% sol</span>'
+          +'<div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;font-weight:500;flex-wrap:wrap">'
+            +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'%</span>'
             +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
+            +'<span style="color:#7BB8D4">&#128205; '+fmtDist(distKm(place))+'</span>'
           +'</div>'
-          +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:7px 0;font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;width:100%;font-weight:600">Ver detalle</button>'
+          +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">Ver detalle</button>'
           +'</div>'
         );
         infoWindow.open(gmap, mk);
@@ -783,7 +857,8 @@ function renderMapList() {
           +'<span style="color:'+opColor+';font-weight:500">'+(op?'Abierto':'Cerrado')+'</span>'
           +' · '
           +'<span style="color:'+sunColor+';font-weight:500">'+sun.txt+'</span>'
-          +' · '+t.z
+          +' · '
+          +'<span style="color:var(--text3)">'+fmtDist(distKm(t))+'</span>'
         +'</div>'
       +'</div>'
       +'<button class="mti-go" onclick="event.stopPropagation();showDetail('+t.id+')">Ver</button>'
