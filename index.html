@@ -523,7 +523,7 @@ function showDetail(id) {
   }
 
   document.getElementById('detContent').innerHTML =
-    '<div id="detPhoto" style="width:100%;height:190px;background:var(--bg3);background-size:cover;background-position:center;display:none;flex-shrink:0"></div>'
+    (t.photo ? '<div style="width:100%;height:190px;background:url('+t.photo+') center/cover no-repeat;flex-shrink:0"></div>' : '')
     +'<div class="det-hero"><div class="det-name">'+t.n+'</div>'
     +'<div class="det-sub">'+t.t.charAt(0).toUpperCase()+t.t.slice(1)+' · '+t.z+' · '+t.dir+'</div>'
     +'<div class="verdict-big '+vc+'"><div class="vb-icon">'+vi+'</div><div><div class="vb-title">'+vt+'</div><div class="vb-text">'+vd+'</div></div></div></div>'
@@ -545,61 +545,19 @@ function showDetail(id) {
     +'<div class="det-row"><span class="det-row-lbl">Reseñas</span><span class="det-row-val">'+t.rv.toLocaleString()+'</span></div>'
     +'</div>'
     +(tips.length?'<div class="det-section"><div class="det-stitle">Consejos</div>'+tips.map(function(tp2){return'<div class="tip-item"><span class="tip-icon">'+tp2.i+'</span><span>'+tp2.t+'</span></div>';}).join('')+'</div>':'')
-    +'<div class="det-section"><div class="det-stitle">Contacto</div>'
-    +'<div id="detContactContent" style="font-size:13px;color:var(--text3);padding:4px 0">Cargando...</div>'
-    +'</div>'
+    +(function(){
+      var ch = '';
+      if(t.phone) ch += '<div class="det-row"><span class="det-row-lbl">Teléfono</span><a href="tel:'+t.phone+'" style="font-weight:500;color:var(--acc2);text-decoration:none">'+t.phone+'</a></div>';
+      if(t.website){ var dm=t.website.replace('https://','').replace('http://','').split('/')[0]; ch += '<div class="det-row"><span class="det-row-lbl">Web</span><a href="'+t.website+'" target="_blank" style="font-weight:500;color:var(--acc2);text-decoration:none">'+dm+'</a></div>'; }
+      return ch ? '<div class="det-section"><div class="det-stitle">Contacto</div>'+ch+'</div>' : '';
+    })()
     +'<div class="det-section"><div class="det-stitle">Sobre el local</div>'
     +'<p style="font-size:14px;color:var(--text2);line-height:1.6">'+t.d+'</p></div>';
 
   goTo('detail');
   setTimeout(function(){ var s=document.getElementById('s-detail'); if(s) s.scrollTop=0; }, 0);
 
-  // Photo + contact details — defer to next tick so DOM is painted
-  setTimeout(function(){
-    var photoEl = document.getElementById('detPhoto');
-    var contEl  = document.getElementById('detContactContent');
 
-    function renderContact(phone, website, todayHours) {
-      if(!contEl) return;
-      var h = '';
-      if(phone) h += '<div class="det-row"><span class="det-row-lbl">Teléfono</span>'
-        +'<a href="tel:'+phone+'" style="font-weight:500;color:var(--acc2);text-decoration:none">'+phone+'</a></div>';
-      if(website){
-        var dom = website.replace('https://','').replace('http://','').replace(/\/.*$/,'');
-        h += '<div class="det-row"><span class="det-row-lbl">Web</span>'
-          +'<a href="'+website+'" target="_blank" style="font-weight:500;color:var(--acc2);text-decoration:none">'+dom+'</a></div>';
-      }
-      if(todayHours) h += '<div class="det-row"><span class="det-row-lbl">Hoy</span>'
-        +'<span class="det-row-val" style="font-size:12px">'+todayHours+'</span></div>';
-      contEl.innerHTML = h || '<span style="color:var(--text3)">Sin información disponible</span>';
-    }
-
-    // Show photo immediately if available on the object
-    if(photoEl && t.photo){
-      photoEl.style.backgroundImage = 'url(' + t.photo + ')';
-      photoEl.style.display = 'block';
-    } else if(photoEl){ photoEl.style.display = 'none'; }
-
-    // If it's a Places result, fetch full details
-    if(t.place_id && window.fetchPlaceDetails){
-      window.fetchPlaceDetails(t.place_id, function(d){
-        if(photoEl && d.photo){
-          photoEl.style.backgroundImage = 'url(' + d.photo + ')';
-          photoEl.style.display = 'block';
-        }
-        var todayTxt = null;
-        if(d.hours && d.hours.length){
-          var day = new Date().getDay();
-          var idx2 = day === 0 ? 6 : day - 1;
-          todayTxt = (d.hours[idx2]||d.hours[0]).replace(/^[^:]+:\s*/,'');
-        }
-        renderContact(d.phone||t.phone, d.website||t.website, todayTxt);
-      });
-    } else {
-      // Static data — use embedded phone/website
-      renderContact(t.phone||null, t.website||null, null);
-    }
-  }, 50);
 
   if(gmap) {
     setTimeout(function(){
