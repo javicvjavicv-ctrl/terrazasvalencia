@@ -554,8 +554,8 @@ function showDetail(id) {
   goTo('detail');
   setTimeout(function(){ var s=document.getElementById('s-detail'); if(s) s.scrollTop=0; }, 0);
 
-  // Photo + contact details
-  (function(place){
+  // Photo + contact details — defer to next tick so DOM is painted
+  setTimeout(function(){
     var photoEl = document.getElementById('detPhoto');
     var contEl  = document.getElementById('detContactContent');
 
@@ -575,14 +575,14 @@ function showDetail(id) {
     }
 
     // Show photo immediately if available on the object
-    if(photoEl && place.photo){
-      photoEl.style.backgroundImage = 'url(' + place.photo + ')';
+    if(photoEl && t.photo){
+      photoEl.style.backgroundImage = 'url(' + t.photo + ')';
       photoEl.style.display = 'block';
     } else if(photoEl){ photoEl.style.display = 'none'; }
 
     // If it's a Places result, fetch full details
-    if(place.place_id && window.fetchPlaceDetails){
-      window.fetchPlaceDetails(place.place_id, function(d){
+    if(t.place_id && window.fetchPlaceDetails){
+      window.fetchPlaceDetails(t.place_id, function(d){
         if(photoEl && d.photo){
           photoEl.style.backgroundImage = 'url(' + d.photo + ')';
           photoEl.style.display = 'block';
@@ -593,13 +593,13 @@ function showDetail(id) {
           var idx2 = day === 0 ? 6 : day - 1;
           todayTxt = (d.hours[idx2]||d.hours[0]).replace(/^[^:]+:\s*/,'');
         }
-        renderContact(d.phone||place.phone, d.website||place.website, todayTxt);
+        renderContact(d.phone||t.phone, d.website||t.website, todayTxt);
       });
     } else {
       // Static data — use embedded phone/website
-      renderContact(place.phone||null, place.website||null, null);
+      renderContact(t.phone||null, t.website||null, null);
     }
-  })(t);
+  }, 50);
 
   if(gmap) {
     setTimeout(function(){
