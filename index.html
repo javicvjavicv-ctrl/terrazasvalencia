@@ -553,7 +553,7 @@ function showDetail(id) {
       var detInfoWindow = new google.maps.InfoWindow();
 
       // Resto de terrazas con círculos (igual que pantalla Mapa)
-      try { DB.forEach(function(other) {
+      DB.forEach(function(other) {
         if (other.id === t.id) return;
         var s2 = sunExp(other.o,cl(),tp());
         var col = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#4A7A9B';
@@ -924,6 +924,12 @@ function getLocation(){
 /* ── INIT ─────────────────────────────────────────────── */
 setInterval(loadW, 600000);
 loadW();
+
+// Mostrar datos estáticos inmediatamente mientras carga Maps
+DB = sortByDist(STATIC_DB);
+renderHome();
+renderSearch();
+renderMapList();
 
 // Attach scroll listeners for scroll-to-top buttons
 ['s-home','s-search'].forEach(function(id){
