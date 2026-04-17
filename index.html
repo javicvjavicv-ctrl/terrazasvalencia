@@ -471,10 +471,12 @@ function filtered(f, q) {
   });
 }
 function renderHome() {
+  if (DB.length === 0) return; // esperar a que carguen los datos
   var l = sortByDist(filtered(filt,'')), el = document.getElementById('homeList');
   el.innerHTML = l.length ? l.map(cardHTML).join('') : '<div class="empty"><div class="empty-title">Sin resultados</div></div>';
 }
 function renderSearch() {
+  if (DB.length === 0) return;
   var q = document.getElementById('sInput').value.toLowerCase(), l = sortByDist(filtered(sfilt,q));
   document.getElementById('searchCount').textContent = l.length + ' terraza' + (l.length!==1?'s':'');
   var el = document.getElementById('searchList');
@@ -731,7 +733,7 @@ setTimeout(function(){
     DB = sortByDist(STATIC_DB);
     renderHome(); renderSearch(); renderMapList();
   }
-}, 2000);
+}, 4000);
 
 function loadPlaces() {
   if (!gmap) { return; }
