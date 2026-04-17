@@ -545,10 +545,54 @@ function showDetail(id) {
     +'<div class="det-row"><span class="det-row-lbl">Reseñas</span><span class="det-row-val">'+t.rv.toLocaleString()+'</span></div>'
     +'</div>'
     +(tips.length?'<div class="det-section"><div class="det-stitle">Consejos</div>'+tips.map(function(tp2){return'<div class="tip-item"><span class="tip-icon">'+tp2.i+'</span><span>'+tp2.t+'</span></div>';}).join('')+'</div>':'')
+    +'<div class="det-section"><div class="det-stitle">Contacto</div>'
+    +'<div id="detContactContent" style="font-size:13px;color:var(--text3);padding:4px 0">Cargando...</div>'
+    +'</div>'
     +'<div class="det-section"><div class="det-stitle">Sobre el local</div>'
     +'<p style="font-size:14px;color:var(--text2);line-height:1.6">'+t.d+'</p></div>';
 
   goTo('detail');
+  setTimeout(function(){ var s=document.getElementById('s-detail'); if(s) s.scrollTop=0; }, 0);
+
+  // Photo + contact details
+  (function(place){
+    var photoEl = document.getElementById('detPhoto');
+    var contEl  = document.getElementById('detContactContent');
+    // Show thumbnail photo from nearbySearch immediately if available
+    if(photoEl && place.photo){
+      photoEl.style.backgroundImage = 'url(' + place.photo + ')';
+      photoEl.style.display = 'block';
+    }
+    // Fetch full details
+    if(place.place_id && window.fetchPlaceDetails){
+      window.fetchPlaceDetails(place.place_id, function(d){
+        if(photoEl && d.photo){
+          photoEl.style.backgroundImage = 'url(' + d.photo + ')';
+          photoEl.style.display = 'block';
+        }
+        if(!contEl) return;
+        var h = '';
+        if(d.phone) h += '<div class="det-row"><span class="det-row-lbl">Teléfono</span>'
+          +'<a href="tel:'+d.phone+'" style="font-weight:500;color:var(--acc2);text-decoration:none">'+d.phone+'</a></div>';
+        if(d.website){
+          var dom = d.website.replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+          h += '<div class="det-row"><span class="det-row-lbl">Web</span>'
+            +'<a href="'+d.website+'" target="_blank" style="font-weight:500;color:var(--acc2);text-decoration:none">'+dom+'</a></div>';
+        }
+        if(d.hours && d.hours.length){
+          var day = new Date().getDay();
+          var idx = day === 0 ? 6 : day - 1;
+          var todayTxt = (d.hours[idx]||d.hours[0]).replace(/^[^\:]+\:\s*/,'');
+          h += '<div class="det-row"><span class="det-row-lbl">Hoy</span>'
+            +'<span class="det-row-val" style="font-size:12px">'+todayTxt+'</span></div>';
+        }
+        contEl.innerHTML = h || '<span style="color:var(--text3)">Sin información disponible</span>';
+      });
+    } else if(contEl){
+      contEl.innerHTML = '<span style="color:var(--text3)">Sin información disponible</span>';
+      if(photoEl) photoEl.style.display = 'none';
+    }
+  })(t);
 
   if(gmap) {
     setTimeout(function(){
@@ -915,9 +959,6 @@ function onScreenScroll(e) {
 }
 
 function goTo(s){
-  // Scroll detail to top whenever we navigate to it
-  var scDet=document.getElementById('s-detail');
-  if(scDet) scDet.scrollTop=0;
   // Manage scroll-to-top button visibility per screen
   var btnHome   = document.getElementById('scrollTopHome');
   var btnSearch = document.getElementById('scrollTopSearch');
