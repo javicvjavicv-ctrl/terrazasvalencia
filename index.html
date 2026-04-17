@@ -178,11 +178,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* Estilo InfoWindow de Google Maps */
-.gm-style .gm-style-iw-c{background:#0F1E30!important;box-shadow:0 4px 16px rgba(0,0,0,0.5)!important;padding:0!important;border-radius:10px!important;max-width:220px!important}
-.gm-style .gm-style-iw-d{overflow:hidden!important;padding:0!important}
+.gm-style .gm-style-iw-c{background:#0F1E30!important;box-shadow:0 4px 16px rgba(0,0,0,0.5)!important;padding:0!important;border-radius:10px!important;max-width:220px!important;overflow:hidden!important}
+.gm-style .gm-style-iw-d{overflow:auto!important;padding:0!important;max-height:none!important}
 .gm-style .gm-style-iw-t::after{background:#0F1E30!important;box-shadow:none!important}
-.gm-style button.gm-ui-hover-effect{top:4px!important;right:4px!important;opacity:0.7!important;filter:invert(1)!important}
-.gm-style button.gm-ui-hover-effect:hover{opacity:1!important}
+.gm-style button.gm-ui-hover-effect{top:4px!important;right:4px!important;opacity:0.8!important;filter:invert(1)!important;width:22px!important;height:22px!important;background:rgba(255,255,255,0.15)!important;border-radius:50%!important}
+.gm-style button.gm-ui-hover-effect span{display:none!important}
+.gm-style button.gm-ui-hover-effect::after{content:'✕';color:#fff;font-size:11px;line-height:22px;display:block;text-align:center}
 .scroll-top{position:absolute;bottom:80px;right:16px;width:44px;height:44px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
 .scroll-top.visible{opacity:1;pointer-events:all}
 .scroll-top:active{transform:scale(.92)}
@@ -544,7 +545,6 @@ function showDetail(id) {
     +'<p style="font-size:14px;color:var(--text2);line-height:1.6">'+t.d+'</p></div>';
 
   goTo('detail');
-  var detScroll=document.getElementById('detContent'); if(detScroll&&detScroll.parentElement) detScroll.parentElement.scrollTop=0;
 
   if(gmap) {
     setTimeout(function(){
@@ -580,26 +580,39 @@ function showDetail(id) {
         zIndex:999
       });
 
-      // Pin ubicación usuario
+      // Pin ubicación usuario (igual que pantalla Mapa)
       if(navigator.geolocation){
         window._detWatchId = navigator.geolocation.watchPosition(function(p){
-          var uPos={lat:p.coords.latitude,lng:p.coords.longitude};
+          var uPos = {lat:p.coords.latitude, lng:p.coords.longitude};
           if(!window._detUserMarker){
-            window._detUserMarker=new google.maps.Marker({position:uPos,map:detMap,title:'Tu ubicación',icon:buildUserIcon(window._detUserHeading||0),zIndex:500});
+            window._detUserMarker = new google.maps.Marker({
+              position: uPos,
+              map: detMap,
+              title: 'Tu ubicación',
+              icon: buildUserIcon(window._detUserHeading||0),
+              zIndex: 500
+            });
           } else {
             window._detUserMarker.setPosition(uPos);
             window._detUserMarker.setIcon(buildUserIcon(window._detUserHeading||0));
           }
-        },{enableHighAccuracy:true});
-        window._detOriHandler = function(e){
-          var h=e.webkitCompassHeading||(e.alpha?360-e.alpha:0);
-          window._detUserHeading=h;
-          if(window._detUserMarker) window._detUserMarker.setIcon(buildUserIcon(h));
-        };
+        }, null, {enableHighAccuracy:true});
+        function handleDetOrientation(e){
+          var heading = e.webkitCompassHeading || (e.alpha ? 360 - e.alpha : 0);
+          window._detUserHeading = heading;
+          if(window._detUserMarker){
+            window._detUserMarker.setIcon(buildUserIcon(heading));
+          }
+        }
+        window._detOriHandler = handleDetOrientation;
         if(window.DeviceOrientationEvent){
           if(typeof DeviceOrientationEvent.requestPermission==='function'){
-            DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')window.addEventListener('deviceorientation',window._detOriHandler);}).catch(function(){});
-          } else { window.addEventListener('deviceorientation',window._detOriHandler); }
+            DeviceOrientationEvent.requestPermission().then(function(r){
+              if(r==='granted') window.addEventListener('deviceorientation', handleDetOrientation);
+            }).catch(function(){});
+          } else {
+            window.addEventListener('deviceorientation', handleDetOrientation);
+          }
         }
       }
     }, 200);
@@ -664,17 +677,15 @@ function buildUserIcon(heading) {
 }
 
 function buildPopupContent(place, sunColor, opColor, op, s2) {
-  return '<div style="font-family:DM Sans,sans-serif;padding:8px 8px 8px;min-width:190px;background:#0F1E30;color:#F4FAFF;border-radius:8px">'
-    +'<div style="font-weight:600;font-size:13px;margin-bottom:2px;color:#F4FAFF">'+place.n+'</div>'
-    +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
-    +'<div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;font-weight:500;flex-wrap:wrap">'
+  return '<div style="font-family:DM Sans,sans-serif;padding:10px 10px 10px;width:200px;background:#0F1E30;color:#F4FAFF;border-radius:8px;box-sizing:border-box">'
+    +'<div style="font-weight:600;font-size:13px;margin-bottom:3px;color:#F4FAFF;padding-right:22px">'+place.n+'</div>'
+    +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:7px">'+place.dir+'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:9px;font-size:11px;font-weight:500;flex-wrap:wrap">'
       +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'%</span>'
       +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
       +'<span style="color:#7BB8D4">&#128205; '+fmtDist(distKm(place))+'</span>'
     +'</div>'
-    +'<div style="text-align:center">'
-      +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:5px 16px;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">Ver detalle</button>'
-    +'</div>'
+    +'<button onclick="showDetail('+place.id+')" style="display:block;width:100%;background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:7px 0;font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600;text-align:center">Ver detalle</button>'
     +'</div>';
 }
 
@@ -829,15 +840,18 @@ function highlightMapListItem(id) {
   document.querySelectorAll('.map-titem.highlighted').forEach(function(el){
     el.classList.remove('highlighted');
   });
-  // Find and highlight the item
   var list = document.getElementById('mapList');
   if (!list) return;
   var items = list.querySelectorAll('.map-titem');
   items.forEach(function(item, idx) {
     if (DB[idx] && DB[idx].id === id) {
       item.classList.add('highlighted');
-      // Scroll the list to show the item
-      item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Centrar el elemento en el espacio visible de la lista
+      var listH = list.clientHeight;
+      var itemTop = item.offsetTop;
+      var itemH = item.offsetHeight;
+      var scrollTo = itemTop - (listH / 2) + (itemH / 2);
+      list.scrollTo({ top: scrollTo, behavior: 'smooth' });
     }
   });
 }
@@ -900,6 +914,11 @@ function onScreenScroll(e) {
 }
 
 function goTo(s){
+  // Scroll detail to top whenever we navigate to it
+  if(s==='detail'){
+    var sc=document.getElementById('s-detail');
+    if(sc) sc.scrollTop=0;
+  }
   // Manage scroll-to-top button visibility per screen
   var btnHome   = document.getElementById('scrollTopHome');
   var btnSearch = document.getElementById('scrollTopSearch');
