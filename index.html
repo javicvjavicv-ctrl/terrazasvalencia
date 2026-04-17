@@ -237,7 +237,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
         <button class="qf" onclick="setF('bar',this)">Bar</button>
       </div>
       <div class="list-wrap" id="homeList">
-        <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas en Valencia...</div></div>
+        <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas...</div><div style="font-size:11px;color:var(--text3);margin-top:6px" id="loadStatus">Iniciando...</div></div>
       </div>
     </div>
 
@@ -633,10 +633,8 @@ var STATIC_DB = [
 ];
 
 function setStatus(msg) {
-  var el = document.getElementById('homeList');
-  if (DB.length === 0) {
-    el.innerHTML = '<div class="empty"><div class="spinner"></div><div style="font-size:13px;color:var(--text3);margin-top:4px">'+msg+'</div></div>';
-  }
+  var el = document.getElementById('loadStatus');
+  if (el) el.textContent = msg;
 }
 
 function buildUserIcon(heading) {
@@ -684,7 +682,7 @@ function buildPopupContent(place, sunColor, opColor, op, s2) {
 }
 
 window.mapsCallback = function() {
-  setStatus('Conectando con Google Places...');
+  setStatus('Maps OK, conectando Places...');
   var mapEl = document.getElementById('gmap');
   mapEl.style.display = 'block';
   document.getElementById('mapEmpty').style.display = 'none';
@@ -730,6 +728,7 @@ window.mapsCallback = function() {
 // Si Maps no carga en 5s, usar datos estáticos
 setTimeout(function(){
   if (DB.length === 0) {
+    setStatus('Usando datos locales...');
     DB = sortByDist(STATIC_DB);
     renderHome(); renderSearch(); renderMapList();
   }
@@ -737,7 +736,7 @@ setTimeout(function(){
 
 function loadPlaces() {
   if (!gmap) { return; }
-  setStatus('Buscando terrazas en Valencia...');
+  setStatus('Buscando terrazas...');
   var center = new google.maps.LatLng(39.4699, -0.3763);
   var svc = new google.maps.places.PlacesService(gmap);
   var seen = {}, results = [], pending = 3;
@@ -747,6 +746,7 @@ function loadPlaces() {
 
   function onDone() {
     pending--;
+    setStatus('Procesando ' + results.length + ' terrazas...');
     if (pending > 0) return;
     // Mezclar resultados de Places con estáticos no duplicados
     var allResults = results.slice();
@@ -943,6 +943,8 @@ loadW();
   s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0&libraries=places&callback=mapsCallback';
   s.async = true;
   s.defer = true;
+  s.onload = function(){ setStatus('Maps cargado'); };
+  s.onerror = function(){ setStatus('Error cargando Maps - usando datos locales'); };
   s.onload = function(){ };
   s.onerror = function(e){ };
   document.head.appendChild(s);
