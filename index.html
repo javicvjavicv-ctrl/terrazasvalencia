@@ -181,7 +181,8 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .gm-style .gm-style-iw-c{background:#0F1E30!important;box-shadow:0 4px 16px rgba(0,0,0,0.5)!important;padding:0!important;border-radius:10px!important;max-width:210px!important;overflow:visible!important}
 .gm-style .gm-style-iw-d{overflow:hidden!important;padding:0!important;max-height:none!important}
 /* Triángulo del color del fondo */
-.gm-style .gm-style-iw-t::after{background:#0F1E30!important;box-shadow:1px 1px 0 rgba(0,0,0,0.3)!important}
+.gm-style .gm-style-iw-t::after{background:#0F1E30!important;box-shadow:2px 2px 2px rgba(0,0,0,0.4)!important}
+.gm-style .gm-style-iw-tc::after{background:#0F1E30!important}
 /* Aspa con contraste visible */
 .gm-style button.gm-ui-hover-effect{top:5px!important;right:5px!important;width:22px!important;height:22px!important;background:#2A3F55!important;border-radius:50%!important;border:1px solid rgba(255,255,255,0.3)!important}
 .gm-style button.gm-ui-hover-effect span{display:none!important}
@@ -681,15 +682,20 @@ function buildUserIcon(heading) {
 }
 
 function buildPopupContent(place, sunColor, opColor, op, s2) {
-  return '<div style="font-family:DM Sans,sans-serif;padding:10px 10px 10px;width:190px;background:#0F1E30;color:#F4FAFF;border-radius:8px;overflow:hidden">'
-    +'<div style="font-weight:600;font-size:13px;margin-bottom:3px;color:#F4FAFF;padding-right:24px;line-height:1.3;word-break:break-word">'+place.n+'</div>'
-    +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:7px;line-height:1.3">'+place.dir+'</div>'
-    +'<div style="display:flex;gap:6px;margin-bottom:9px;font-size:11px;font-weight:500;flex-wrap:wrap;align-items:center">'
-      +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'%</span>'
-      +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
-      +'<span style="color:#7BB8D4">&#128205; '+fmtDist(distKm(place))+'</span>'
+  // Truncate name and address to avoid overflow
+  var name = place.n.length > 22 ? place.n.substring(0,21)+'…' : place.n;
+  var addr = place.dir.length > 28 ? place.dir.substring(0,27)+'…' : place.dir;
+  return '<div style="font-family:DM Sans,sans-serif;padding:8px 8px 8px;width:180px;background:#0F1E30;color:#F4FAFF;border-radius:8px;overflow:hidden;box-sizing:border-box">'
+    +'<div style="font-weight:600;font-size:13px;margin-bottom:2px;color:#F4FAFF;padding-right:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+name+'</div>'
+    +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+addr+'</div>'
+    +'<div style="display:flex;gap:5px;margin-bottom:8px;font-size:11px;font-weight:500;align-items:center;flex-wrap:nowrap">'
+      +'<span style="color:'+sunColor+';white-space:nowrap">&#9728; '+s2.n+'%</span>'
+      +'<span style="color:'+opColor+';white-space:nowrap">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
+      +'<span style="color:#7BB8D4;white-space:nowrap">'+fmtDist(distKm(place))+'</span>'
     +'</div>'
-    +'<button onclick="showDetail('+place.id+')" style="display:block;width:100%;background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:7px 0;font-size:12px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600;text-align:center;box-sizing:border-box">Ver detalle</button>'
+    +'<div style="text-align:center">'
+    +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:6px 18px;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">Ver detalle</button>'
+    +'</div>'
     +'</div>';
 }
 
@@ -920,10 +926,8 @@ function onScreenScroll(e) {
 
 function goTo(s){
   // Scroll detail to top whenever we navigate to it
-  if(s==='detail'){
-    var sc=document.getElementById('s-detail');
-    if(sc) sc.scrollTop=0;
-  }
+  var scDet=document.getElementById('s-detail');
+  if(scDet) scDet.scrollTop=0;
   // Manage scroll-to-top button visibility per screen
   var btnHome   = document.getElementById('scrollTopHome');
   var btnSearch = document.getElementById('scrollTopSearch');
