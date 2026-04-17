@@ -826,18 +826,7 @@ function buildMarkers() {
         var op=isOp(place), s2=sunExp(place.o,cl(),tp());
         var sunColor = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#9BB8CC';
         var opColor  = op?'#4DC98A':'#E06875';
-        infoWindow.setContent(
-          '<div style="font-family:DM Sans,sans-serif;padding:8px 8px 6px;min-width:190px;background:#0F1E30;color:#F4FAFF;border-radius:8px">'
-          +'<div style="font-weight:600;font-size:13px;margin-bottom:2px;color:#F4FAFF">'+place.n+'</div>'
-          +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
-          +'<div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;font-weight:500;flex-wrap:wrap">'
-            +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'%</span>'
-            +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
-            +'<span style="color:#7BB8D4">&#128205; '+fmtDist(distKm(place))+'</span>'
-          +'</div>'
-          +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">Ver detalle</button>'
-          +'</div>'
-        );
+        infoWindow.setContent(buildPopupContent(place, sunColor, opColor, op, s2));
         infoWindow.open(gmap, mk);
         highlightMapListItem(place.id);
       });
@@ -847,22 +836,23 @@ function buildMarkers() {
 }
 
 function highlightMapListItem(id) {
-  // Remove previous highlight
   document.querySelectorAll('.map-titem.highlighted').forEach(function(el){
     el.classList.remove('highlighted');
   });
   var list = document.getElementById('mapList');
   if (!list) return;
   var items = list.querySelectorAll('.map-titem');
+  var found = false;
   items.forEach(function(item, idx) {
     if (DB[idx] && DB[idx].id === id) {
+      found = true;
       item.classList.add('highlighted');
-      // Centrar el elemento en el espacio visible de la lista
-      var listH = list.clientHeight;
-      var itemTop = item.offsetTop;
-      var itemH = item.offsetHeight;
-      var scrollTo = itemTop - (listH / 2) + (itemH / 2);
-      list.scrollTo({ top: scrollTo, behavior: 'smooth' });
+      // Calcular posición relativa al contenedor scrollable
+      var listRect  = list.getBoundingClientRect();
+      var itemRect  = item.getBoundingClientRect();
+      var itemRelTop = itemRect.top - listRect.top + list.scrollTop;
+      var scrollTo  = itemRelTop - (list.clientHeight / 2) + (item.offsetHeight / 2);
+      list.scrollTo({ top: Math.max(0, scrollTo), behavior: 'smooth' });
     }
   });
 }
