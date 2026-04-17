@@ -177,12 +177,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
 .empty-sub{font-size:13px;color:var(--text3)}
 .spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* Eliminar fondo blanco del InfoWindow de Google Maps */
-.gm-style .gm-style-iw-c{background:transparent!important;box-shadow:none!important;padding:0!important;border-radius:10px!important;max-width:220px!important}
+/* Estilo InfoWindow de Google Maps */
+.gm-style .gm-style-iw-c{background:#0F1E30!important;box-shadow:0 4px 16px rgba(0,0,0,0.5)!important;padding:0!important;border-radius:10px!important;max-width:220px!important}
 .gm-style .gm-style-iw-d{overflow:hidden!important;padding:0!important}
-.gm-style .gm-style-iw-t::after{display:none!important}
-.gm-style .gm-style-iw-tc{display:none!important}
-.gm-style button.gm-ui-hover-effect{display:none!important}
+.gm-style .gm-style-iw-t::after{background:#0F1E30!important;box-shadow:none!important}
+.gm-style button.gm-ui-hover-effect{top:4px!important;right:4px!important;opacity:0.7!important;filter:invert(1)!important}
+.gm-style button.gm-ui-hover-effect:hover{opacity:1!important}
 .scroll-top{position:absolute;bottom:80px;right:16px;width:44px;height:44px;background:var(--acc);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
 .scroll-top.visible{opacity:1;pointer-events:all}
 .scroll-top:active{transform:scale(.92)}
@@ -502,6 +502,11 @@ function showDetail(id) {
   var temp=W?Math.round(W.temperature_2m):'--', wind=W?Math.round(W.wind_speed_10m):'--';
   prevScreen = document.querySelector('.screen.active').id.replace('s-','');
 
+  // Limpiar watchers anteriores del mapa de detalle
+  if(window._detWatchId) { navigator.geolocation.clearWatch(window._detWatchId); window._detWatchId=null; }
+  if(window._detOriHandler) { window.removeEventListener('deviceorientation',window._detOriHandler); window._detOriHandler=null; }
+  window._detUserMarker = null;
+  window._detUserHeading = window._detUserHeading || 0;
   var locMap = '';
   if(gmap){
     locMap = '<div id="locMapDiv" style="width:100%;height:100%"></div>';
@@ -537,6 +542,7 @@ function showDetail(id) {
     +'<p style="font-size:14px;color:var(--text2);line-height:1.6">'+t.d+'</p></div>';
 
   goTo('detail');
+  var detScroll=document.getElementById('detContent'); if(detScroll&&detScroll.parentElement) detScroll.parentElement.scrollTop=0;
 
   if(gmap) {
     setTimeout(function(){
@@ -545,7 +551,7 @@ function showDetail(id) {
       var detInfoWindow = new google.maps.InfoWindow();
 
       // Resto de terrazas con círculos (igual que pantalla Mapa)
-      DB.forEach(function(other) {
+      try { DB.forEach(function(other) {
         if (other.id === t.id) return;
         var s2 = sunExp(other.o,cl(),tp());
         var col = s2.cls==='soleada'?'#F5C842':s2.cls==='parcial'?'#4FA8D5':'#4A7A9B';
@@ -559,40 +565,22 @@ function showDetail(id) {
             var op3 = isOp(place);
             var sunColor = s3.cls==='soleada'?'#F5C842':s3.cls==='parcial'?'#4FA8D5':'#9BB8CC';
             var opColor  = op3 ? '#4DC98A' : '#E06875';
-            detInfoWindow.setContent(
-              '<div style="font-family:DM Sans,sans-serif;padding:6px 4px 4px;min-width:180px;background:#0F1E30;color:#F4FAFF;border-radius:4px">'
-              +'<div style="font-weight:600;font-size:13px;margin-bottom:3px;color:#F4FAFF">'+place.n+'</div>'
-              +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
-              +'<div style="display:flex;gap:10px;margin-bottom:8px;font-size:11px;font-weight:500">'
-                +'<span style="color:'+sunColor+'">&#9728; '+s3.n+'% sol</span>'
-                +'<span style="color:'+opColor+'">'+(op3?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
-              +'</div>'
-              +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:7px;padding:7px 0;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;width:100%;font-weight:600">Ver detalle</button>'
-              +'</div>'
-            );
+            detInfoWindow.setContent(buildPopupContent(place, sunColor, opColor, op3, s3));
             detInfoWindow.open(detMap, marker);
           });
         })(m2, other);
       });
 
-      // Chincheta para la terraza seleccionada
+      // Marcador rojo estándar de Google para la terraza seleccionada
       new google.maps.Marker({
         position:{lat:t.lat,lng:t.lng}, map:detMap, title:t.n,
-        icon:{
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">'
-            +'<path d="M16 0C7.16 0 0 7.16 0 16c0 10.5 16 26 16 26S32 26.5 32 16C32 7.16 24.84 0 16 0z" fill="#F5C842" stroke="#0D1B2A" stroke-width="2"/>'
-            +'<circle cx="16" cy="16" r="6" fill="#0D1B2A"/>'
-            +'</svg>'
-          ),
-          scaledSize: new google.maps.Size(32, 42),
-          anchor: new google.maps.Point(16, 42)
-        }
+        icon:'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+        zIndex:999
       });
 
       // Pin ubicación usuario
       if(navigator.geolocation){
-        navigator.geolocation.watchPosition(function(p){
+        window._detWatchId = navigator.geolocation.watchPosition(function(p){
           var uPos={lat:p.coords.latitude,lng:p.coords.longitude};
           if(!window._detUserMarker){
             window._detUserMarker=new google.maps.Marker({position:uPos,map:detMap,title:'Tu ubicación',icon:buildUserIcon(window._detUserHeading||0),zIndex:500});
@@ -601,15 +589,15 @@ function showDetail(id) {
             window._detUserMarker.setIcon(buildUserIcon(window._detUserHeading||0));
           }
         },{enableHighAccuracy:true});
-        function onDetOri(e){
+        window._detOriHandler = function(e){
           var h=e.webkitCompassHeading||(e.alpha?360-e.alpha:0);
           window._detUserHeading=h;
           if(window._detUserMarker) window._detUserMarker.setIcon(buildUserIcon(h));
-        }
+        };
         if(window.DeviceOrientationEvent){
           if(typeof DeviceOrientationEvent.requestPermission==='function'){
-            DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')window.addEventListener('deviceorientation',onDetOri);}).catch(function(){});
-          } else { window.addEventListener('deviceorientation',onDetOri); }
+            DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')window.addEventListener('deviceorientation',window._detOriHandler);}).catch(function(){});
+          } else { window.addEventListener('deviceorientation',window._detOriHandler); }
         }
       }
     }, 200);
@@ -676,6 +664,21 @@ function buildUserIcon(heading) {
     scaledSize: new google.maps.Size(48, 48),
     anchor: new google.maps.Point(24, 24)
   };
+}
+
+function buildPopupContent(place, sunColor, opColor, op, s2) {
+  return '<div style="font-family:DM Sans,sans-serif;padding:8px 8px 8px;min-width:190px;background:#0F1E30;color:#F4FAFF;border-radius:8px">'
+    +'<div style="font-weight:600;font-size:13px;margin-bottom:2px;color:#F4FAFF">'+place.n+'</div>'
+    +'<div style="font-size:11px;color:#C8E4F4;margin-bottom:6px">'+place.dir+'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;font-weight:500;flex-wrap:wrap">'
+      +'<span style="color:'+sunColor+'">&#9728; '+s2.n+'%</span>'
+      +'<span style="color:'+opColor+'">'+(op?'&#9679; Abierto':'&#9679; Cerrado')+'</span>'
+      +'<span style="color:#7BB8D4">&#128205; '+fmtDist(distKm(place))+'</span>'
+    +'</div>'
+    +'<div style="text-align:center">'
+      +'<button onclick="showDetail('+place.id+')" style="background:#4FA8D5;color:#0D1B2A;border:none;border-radius:6px;padding:5px 16px;font-size:11px;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:600">Ver detalle</button>'
+    +'</div>'
+    +'</div>';
 }
 
 window.mapsCallback = function() {
