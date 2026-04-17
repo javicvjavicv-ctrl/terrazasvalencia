@@ -558,39 +558,46 @@ function showDetail(id) {
   (function(place){
     var photoEl = document.getElementById('detPhoto');
     var contEl  = document.getElementById('detContactContent');
-    // Show thumbnail photo from nearbySearch immediately if available
+
+    function renderContact(phone, website, todayHours) {
+      if(!contEl) return;
+      var h = '';
+      if(phone) h += '<div class="det-row"><span class="det-row-lbl">Teléfono</span>'
+        +'<a href="tel:'+phone+'" style="font-weight:500;color:var(--acc2);text-decoration:none">'+phone+'</a></div>';
+      if(website){
+        var dom = website.replace('https://','').replace('http://','').replace(/\/.*$/,'');
+        h += '<div class="det-row"><span class="det-row-lbl">Web</span>'
+          +'<a href="'+website+'" target="_blank" style="font-weight:500;color:var(--acc2);text-decoration:none">'+dom+'</a></div>';
+      }
+      if(todayHours) h += '<div class="det-row"><span class="det-row-lbl">Hoy</span>'
+        +'<span class="det-row-val" style="font-size:12px">'+todayHours+'</span></div>';
+      contEl.innerHTML = h || '<span style="color:var(--text3)">Sin información disponible</span>';
+    }
+
+    // Show photo immediately if available on the object
     if(photoEl && place.photo){
       photoEl.style.backgroundImage = 'url(' + place.photo + ')';
       photoEl.style.display = 'block';
-    }
-    // Fetch full details
+    } else if(photoEl){ photoEl.style.display = 'none'; }
+
+    // If it's a Places result, fetch full details
     if(place.place_id && window.fetchPlaceDetails){
       window.fetchPlaceDetails(place.place_id, function(d){
         if(photoEl && d.photo){
           photoEl.style.backgroundImage = 'url(' + d.photo + ')';
           photoEl.style.display = 'block';
         }
-        if(!contEl) return;
-        var h = '';
-        if(d.phone) h += '<div class="det-row"><span class="det-row-lbl">Teléfono</span>'
-          +'<a href="tel:'+d.phone+'" style="font-weight:500;color:var(--acc2);text-decoration:none">'+d.phone+'</a></div>';
-        if(d.website){
-          var dom = d.website.replace(/^https?:\/\//,'').replace(/\/.*$/,'');
-          h += '<div class="det-row"><span class="det-row-lbl">Web</span>'
-            +'<a href="'+d.website+'" target="_blank" style="font-weight:500;color:var(--acc2);text-decoration:none">'+dom+'</a></div>';
-        }
+        var todayTxt = null;
         if(d.hours && d.hours.length){
           var day = new Date().getDay();
-          var idx = day === 0 ? 6 : day - 1;
-          var todayTxt = (d.hours[idx]||d.hours[0]).replace(/^[^\:]+\:\s*/,'');
-          h += '<div class="det-row"><span class="det-row-lbl">Hoy</span>'
-            +'<span class="det-row-val" style="font-size:12px">'+todayTxt+'</span></div>';
+          var idx2 = day === 0 ? 6 : day - 1;
+          todayTxt = (d.hours[idx2]||d.hours[0]).replace(/^[^:]+:\s*/,'');
         }
-        contEl.innerHTML = h || '<span style="color:var(--text3)">Sin información disponible</span>';
+        renderContact(d.phone||place.phone, d.website||place.website, todayTxt);
       });
-    } else if(contEl){
-      contEl.innerHTML = '<span style="color:var(--text3)">Sin información disponible</span>';
-      if(photoEl) photoEl.style.display = 'none';
+    } else {
+      // Static data — use embedded phone/website
+      renderContact(place.phone||null, place.website||null, null);
     }
   })(t);
 
@@ -671,27 +678,27 @@ function showDetail(id) {
 /* ── GOOGLE MAPS ──────────────────────────────────────── */
 /* ── STATIC FALLBACK DATA ─────────────────────────────── */
 var STATIC_DB = [
-  {id:0,n:"La Pepica",t:"restaurante",z:"Malvarrosa",d:"Paella y arroces frente al mar.",dir:"Paseo Neptuno, 6",h:{a:13,c:23},o:"E",tags:[],r:4.4,rv:3820,toldos:true,calef:false,vistas:true,lat:39.4718,lng:-0.3271},
-  {id:1,n:"Café de las Horas",t:"cafe",z:"Centro histórico",d:"Café de estilo vienés en el barrio del Carmen.",dir:"C/ Conde de Almodóvar, 1",h:{a:11,c:1},o:"N",tags:[],r:4.6,rv:2140,toldos:true,calef:true,vistas:false,lat:39.4759,lng:-0.3801},
-  {id:2,n:"El Rall",t:"bar",z:"Carmen",d:"Cerveza artesana en pleno barrio del Carmen.",dir:"C/ Tundidors, 2",h:{a:12,c:2},o:"S",tags:[],r:4.3,rv:890,toldos:false,calef:true,vistas:false,lat:39.4762,lng:-0.3812},
-  {id:3,n:"Nou Racó",t:"restaurante",z:"Albufera",d:"Arroces con vistas al lago de la Albufera.",dir:"C/ Dels Pescadors, El Palmar",h:{a:13,c:17},o:"O",tags:[],r:4.7,rv:1560,toldos:true,calef:false,vistas:true,lat:39.3333,lng:-0.3366},
-  {id:4,n:"La Ciclista",t:"cafe",z:"Ruzafa",d:"Café specialty en el barrio más trendy.",dir:"C/ Dénia, 14",h:{a:9,c:22},o:"SE",tags:[],r:4.5,rv:1230,toldos:true,calef:false,vistas:false,lat:39.4621,lng:-0.3739},
-  {id:5,n:"Aqua Restaurant",t:"restaurante",z:"Marina",d:"Cocina mediterránea en el puerto deportivo.",dir:"Marina Real Juan Carlos I",h:{a:13,c:24},o:"SE",tags:[],r:4.2,rv:2100,toldos:true,calef:true,vistas:true,lat:39.4574,lng:-0.3283},
-  {id:6,n:"Bar Ricardo",t:"bar",z:"Ensanche",d:"Clásico valenciano con horchata y fartons.",dir:"Av. del Regne de València, 18",h:{a:7,c:22},o:"O",tags:[],r:4.1,rv:650,toldos:false,calef:false,vistas:false,lat:39.4684,lng:-0.3689},
-  {id:7,n:"Jardines del Real",t:"cafe",z:"Turia",d:"Quiosco dentro del jardín del Turia.",dir:"Jardines del Real, Puente Trinidad",h:{a:10,c:20},o:"S",tags:[],r:4.4,rv:780,toldos:false,calef:false,vistas:true,lat:39.4786,lng:-0.3624},
-  {id:8,n:"Mercado de Colón",t:"cafe",z:"Pla del Remei",d:"Brunch de lujo en el modernista Mercado de Colón.",dir:"C/ de Jorge Juan, 19",h:{a:9,c:24},o:"N",tags:[],r:4.5,rv:3400,toldos:true,calef:true,vistas:false,lat:39.4708,lng:-0.3667},
-  {id:9,n:"La Fábrica de Hielo",t:"bar",z:"Cabanyal",d:"Bar cultural en antigua fábrica de hielo.",dir:"C/ del Rosari, 15",h:{a:11,c:3},o:"E",tags:[],r:4.6,rv:1870,toldos:false,calef:false,vistas:false,lat:39.4706,lng:-0.3272},
-  {id:10,n:"La Más Bonita",t:"cafe",z:"Cabanyal",d:"Café con encanto frente al mar, famoso por sus desayunos.",dir:"C/ de Eugènia Viñes, 226",h:{a:9,c:22},o:"E",tags:[],r:4.5,rv:2800,toldos:true,calef:false,vistas:true,lat:39.4690,lng:-0.3280},
-  {id:11,n:"Bar Pilar",t:"bar",z:"Mercat Central",d:"Taberna clásica famosa por sus mejillones.",dir:"C/ del Moro Zeit, 13",h:{a:10,c:23},o:"N",tags:[],r:4.4,rv:3100,toldos:false,calef:false,vistas:false,lat:39.4740,lng:-0.3790},
-  {id:12,n:"Umm...",t:"cafe",z:"Ruzafa",d:"Café de especialidad con brunch y postres artesanos.",dir:"C/ del Literat Azorín, 10",h:{a:9,c:21},o:"SO",tags:[],r:4.7,rv:1450,toldos:true,calef:true,vistas:false,lat:39.4612,lng:-0.3750},
-  {id:13,n:"Sagardi Valencia",t:"restaurante",z:"Ciutat Vella",d:"Pintxos vascos en pleno centro histórico.",dir:"C/ dels Cavallers, 24",h:{a:12,c:24},o:"N",tags:[],r:4.4,rv:1760,toldos:false,calef:true,vistas:false,lat:39.4755,lng:-0.3795},
-  {id:14,n:"Panoràmic",t:"restaurante",z:"Ciudad de las Artes",d:"Terraza con vistas al complejo de la Ciudad de las Artes.",dir:"Av. del Professor López Piñero, 7",h:{a:13,c:23},o:"SO",tags:[],r:4.3,rv:1340,toldos:true,calef:false,vistas:true,lat:39.4546,lng:-0.3508},
-  {id:15,n:"Bodega Montana",t:"bar",z:"Cabanyal",d:"Bodega centenaria con vinos valencianos.",dir:"C/ del Josep Benlliure, 69",h:{a:12,c:23},o:"SO",tags:[],r:4.7,rv:760,toldos:false,calef:false,vistas:false,lat:39.4698,lng:-0.3288},
-  {id:16,n:"Mua Valencia",t:"cafe",z:"Eixample",d:"Cafetería moderna con gran terraza en el Eixample.",dir:"C/ del Conqueridor, 10",h:{a:8,c:22},o:"E",tags:[],r:4.4,rv:1230,toldos:true,calef:true,vistas:false,lat:39.4676,lng:-0.3698},
-  {id:17,n:"Las Añas",t:"restaurante",z:"Alboraya",d:"Horchatería y arroces en la huerta valenciana.",dir:"C/ Major, 44, Alboraya",h:{a:10,c:22},o:"S",tags:[],r:4.5,rv:1890,toldos:true,calef:false,vistas:true,lat:39.5050,lng:-0.3580},
-  {id:18,n:"Tasca Ángel",t:"bar",z:"Patacona",d:"Bar de playa con terraza frente al mar.",dir:"Paseo de la Patacona, 12",h:{a:10,c:23},o:"E",tags:[],r:4.2,rv:980,toldos:true,calef:false,vistas:true,lat:39.5020,lng:-0.3310},
-  {id:19,n:"Cervecería Maipi",t:"bar",z:"Gran Vía",d:"Clásica cervecería con amplia terraza desde 1963.",dir:"C/ del Marqués de Dos Aguas, 4",h:{a:10,c:24},o:"O",tags:[],r:4.2,rv:2200,toldos:true,calef:true,vistas:false,lat:39.4702,lng:-0.3710},
-  {id:20,n:"Fresca Ensaladas",t:"restaurante",z:"Benimaclet",d:"Restaurante saludable con bowls y zumos.",dir:"C/ de Murillo, 38",h:{a:10,c:22},o:"SE",tags:[],r:4.5,rv:890,toldos:true,calef:false,vistas:false,lat:39.4820,lng:-0.3620}
+  {id:0,n:"La Pepica",t:"restaurante",z:"Malvarrosa",d:"Paella y arroces frente al mar. Restaurante histórico fundado en 1898, frecuentado por Hemingway.",dir:"Paseo Neptuno, 6",h:{a:13,c:23},o:"E",tags:[],r:4.4,rv:3820,toldos:true,calef:false,vistas:true,lat:39.4718,lng:-0.3271,phone:"+34 963 710 366",website:"https://lapepica.com",photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4718,-0.3271&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:1,n:"Café de las Horas",t:"cafe",z:"Centro histórico",d:"Café de estilo vienés en el barrio del Carmen. Famoso por su Agua de Valencia y ambiente romántico.",dir:"C/ Conde de Almodóvar, 1",h:{a:11,c:1},o:"N",tags:[],r:4.6,rv:2140,toldos:true,calef:true,vistas:false,lat:39.4759,lng:-0.3801,phone:"+34 963 917 336",website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4759,-0.3801&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:2,n:"El Rall",t:"bar",z:"Carmen",d:"Cerveza artesana en pleno barrio del Carmen. Terraza animada en calle peatonal.",dir:"C/ Tundidors, 2",h:{a:12,c:2},o:"S",tags:[],r:4.3,rv:890,toldos:false,calef:true,vistas:false,lat:39.4762,lng:-0.3812,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4762,-0.3812&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:3,n:"Nou Racó",t:"restaurante",z:"Albufera",d:"Arroces tradicionales con vistas al lago de la Albufera. Experiencia única en plena naturaleza.",dir:"C/ Dels Pescadors, El Palmar",h:{a:13,c:17},o:"O",tags:[],r:4.7,rv:1560,toldos:true,calef:false,vistas:true,lat:39.3333,lng:-0.3366,phone:"+34 961 620 235",website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.3333,-0.3366&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:4,n:"La Ciclista",t:"cafe",z:"Ruzafa",d:"Café specialty en el barrio más trendy. Brunch, bicicletas y muy buen rollo.",dir:"C/ Dénia, 14",h:{a:9,c:22},o:"SE",tags:[],r:4.5,rv:1230,toldos:true,calef:false,vistas:false,lat:39.4621,lng:-0.3739,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4621,-0.3739&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:5,n:"Aqua Restaurant",t:"restaurante",z:"Marina",d:"Cocina mediterránea en el puerto deportivo. Vistas al mar y ambiente exclusivo.",dir:"Marina Real Juan Carlos I",h:{a:13,c:24},o:"SE",tags:[],r:4.2,rv:2100,toldos:true,calef:true,vistas:true,lat:39.4574,lng:-0.3283,phone:"+34 963 530 000",website:"https://www.aquavalencia.es",photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4574,-0.3283&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:6,n:"Bar Ricardo",t:"bar",z:"Ensanche",d:"Clásico valenciano de toda la vida. Horchata, fartons y terracita en la acera.",dir:"Av. del Regne de València, 18",h:{a:7,c:22},o:"O",tags:[],r:4.1,rv:650,toldos:false,calef:false,vistas:false,lat:39.4684,lng:-0.3689,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4684,-0.3689&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:7,n:"Jardines del Real",t:"cafe",z:"Turia",d:"Quiosco dentro del jardín del Turia. Rodeado de naranjos y pájaros.",dir:"Jardines del Real, Puente Trinidad",h:{a:10,c:20},o:"S",tags:[],r:4.4,rv:780,toldos:false,calef:false,vistas:true,lat:39.4786,lng:-0.3624,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4786,-0.3624&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:8,n:"Mercado de Colón",t:"cafe",z:"Pla del Remei",d:"Brunch de lujo en el modernista Mercado de Colón. Arquitectura modernista espectacular.",dir:"C/ de Jorge Juan, 19",h:{a:9,c:24},o:"N",tags:[],r:4.5,rv:3400,toldos:true,calef:true,vistas:false,lat:39.4708,lng:-0.3667,phone:null,website:"https://www.mercadocolon.es",photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4708,-0.3667&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:9,n:"La Fábrica de Hielo",t:"bar",z:"Cabanyal",d:"Bar cultural en antigua fábrica de hielo junto a la playa del Cabanyal.",dir:"C/ del Rosari, 15",h:{a:11,c:3},o:"E",tags:[],r:4.6,rv:1870,toldos:false,calef:false,vistas:false,lat:39.4706,lng:-0.3272,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4706,-0.3272&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:10,n:"La Más Bonita",t:"cafe",z:"Cabanyal",d:"Café con encanto frente al mar, famoso por sus desayunos y decoración vintage.",dir:"C/ de Eugènia Viñes, 226",h:{a:9,c:22},o:"E",tags:[],r:4.5,rv:2800,toldos:true,calef:false,vistas:true,lat:39.4690,lng:-0.3280,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4690,-0.3280&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:11,n:"Bar Pilar",t:"bar",z:"Mercat Central",d:"Taberna clásica valenciana famosa por sus mejillones y cerveza fría.",dir:"C/ del Moro Zeit, 13",h:{a:10,c:23},o:"N",tags:[],r:4.4,rv:3100,toldos:false,calef:false,vistas:false,lat:39.4740,lng:-0.3790,phone:"+34 963 910 497",website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4740,-0.3790&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:12,n:"Umm...",t:"cafe",z:"Ruzafa",d:"Café de especialidad con brunch y postres artesanos en el corazón de Ruzafa.",dir:"C/ del Literat Azorín, 10",h:{a:9,c:21},o:"SO",tags:[],r:4.7,rv:1450,toldos:true,calef:true,vistas:false,lat:39.4612,lng:-0.3750,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4612,-0.3750&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:13,n:"Sagardi Valencia",t:"restaurante",z:"Ciutat Vella",d:"Pintxos vascos y cocina del País Vasco en pleno centro histórico de Valencia.",dir:"C/ dels Cavallers, 24",h:{a:12,c:24},o:"N",tags:[],r:4.4,rv:1760,toldos:false,calef:true,vistas:false,lat:39.4755,lng:-0.3795,phone:"+34 963 924 665",website:"https://sagardi.com",photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4755,-0.3795&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:14,n:"Panoràmic",t:"restaurante",z:"Ciudad de las Artes",d:"Terraza con vistas al complejo de la Ciudad de las Artes y las Ciencias.",dir:"Av. del Professor López Piñero, 7",h:{a:13,c:23},o:"SO",tags:[],r:4.3,rv:1340,toldos:true,calef:false,vistas:true,lat:39.4546,lng:-0.3508,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4546,-0.3508&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:15,n:"Bodega Montana",t:"bar",z:"Cabanyal",d:"Bodega centenaria reconvertida en bar de vinos con ambiente auténtico.",dir:"C/ del Josep Benlliure, 69",h:{a:12,c:23},o:"SO",tags:[],r:4.7,rv:760,toldos:false,calef:false,vistas:false,lat:39.4698,lng:-0.3288,phone:"+34 963 672 314",website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4698,-0.3288&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:16,n:"Mua Valencia",t:"cafe",z:"Eixample",d:"Cafetería moderna con gran terraza en el Eixample. Desayunos y brunch.",dir:"C/ del Conqueridor, 10",h:{a:8,c:22},o:"E",tags:[],r:4.4,rv:1230,toldos:true,calef:true,vistas:false,lat:39.4676,lng:-0.3698,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4676,-0.3698&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:17,n:"Las Añas",t:"restaurante",z:"Alboraya",d:"Horchatería y restaurante de arroces en la huerta valenciana.",dir:"C/ Major, 44, Alboraya",h:{a:10,c:22},o:"S",tags:[],r:4.5,rv:1890,toldos:true,calef:false,vistas:true,lat:39.5050,lng:-0.3580,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.5050,-0.3580&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:18,n:"Tasca Ángel",t:"bar",z:"Patacona",d:"Bar de playa en la Patacona con terraza frente al mar.",dir:"Paseo de la Patacona, 12",h:{a:10,c:23},o:"E",tags:[],r:4.2,rv:980,toldos:true,calef:false,vistas:true,lat:39.5020,lng:-0.3310,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.5020,-0.3310&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:19,n:"Cervecería Maipi",t:"bar",z:"Gran Vía",d:"Clásica cervecería con amplia terraza desde 1963. Tapas y cañas.",dir:"C/ del Marqués de Dos Aguas, 4",h:{a:10,c:24},o:"O",tags:[],r:4.2,rv:2200,toldos:true,calef:true,vistas:false,lat:39.4702,lng:-0.3710,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4702,-0.3710&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"},
+  {id:20,n:"Fresca Ensaladas",t:"restaurante",z:"Benimaclet",d:"Restaurante saludable con bowls, ensaladas y zumos naturales.",dir:"C/ de Murillo, 38",h:{a:10,c:22},o:"SE",tags:[],r:4.5,rv:890,toldos:true,calef:false,vistas:false,lat:39.4820,lng:-0.3620,phone:null,website:null,photo:"https://maps.googleapis.com/maps/api/streetview?size=600x300&location=39.4820,-0.3620&key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0"}
 ];
 
 function setStatus(msg) {}
