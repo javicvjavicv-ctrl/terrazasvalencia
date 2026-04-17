@@ -237,7 +237,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text)}
         <button class="qf" onclick="setF('bar',this)">Bar</button>
       </div>
       <div class="list-wrap" id="homeList">
-        <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas...</div><div style="font-size:11px;color:var(--text3);margin-top:6px" id="loadStatus">Iniciando...</div></div>
+        <div class="empty"><div class="spinner"></div><div style="font-size:14px;color:var(--text2)">Buscando terrazas en Valencia...</div></div>
       </div>
     </div>
 
@@ -632,10 +632,7 @@ var STATIC_DB = [
   {id:20,n:"Fresca Ensaladas",t:"restaurante",z:"Benimaclet",d:"Restaurante saludable con bowls y zumos.",dir:"C/ de Murillo, 38",h:{a:10,c:22},o:"SE",tags:[],r:4.5,rv:890,toldos:true,calef:false,vistas:false,lat:39.4820,lng:-0.3620}
 ];
 
-function setStatus(msg) {
-  var el = document.getElementById('loadStatus');
-  if (el) el.textContent = msg;
-}
+function setStatus(msg) {}
 
 function buildUserIcon(heading) {
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">'
@@ -682,7 +679,6 @@ function buildPopupContent(place, sunColor, opColor, op, s2) {
 }
 
 window.mapsCallback = function() {
-  setStatus('Maps OK, conectando Places...');
   var mapEl = document.getElementById('gmap');
   mapEl.style.display = 'block';
   document.getElementById('mapEmpty').style.display = 'none';
@@ -728,7 +724,6 @@ window.mapsCallback = function() {
 // Si Maps no carga en 5s, usar datos estáticos
 setTimeout(function(){
   if (DB.length === 0) {
-    setStatus('Usando datos locales...');
     DB = sortByDist(STATIC_DB);
     renderHome(); renderSearch(); renderMapList();
   }
@@ -736,7 +731,6 @@ setTimeout(function(){
 
 function loadPlaces() {
   if (!gmap) { return; }
-  setStatus('Buscando terrazas...');
   var center = new google.maps.LatLng(39.4699, -0.3763);
   var svc = new google.maps.places.PlacesService(gmap);
   var seen = {}, results = [], pending = 3;
@@ -943,23 +937,11 @@ loadW();
   s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBxP_YbIqaFFTYVR1U_a0Z6zBKJPgJhFE0&libraries=places&callback=mapsCallback';
   s.async = true;
   s.defer = true;
-  s.onload = function(){ setStatus('Maps cargado'); };
-  s.onerror = function(){ setStatus('Error cargando Maps - usando datos locales'); };
-  s.onload = function(){ };
   s.onerror = function(e){ };
   document.head.appendChild(s);
 })();
 </script>
-<script>
-// Limpiar todos los service workers y cachés antiguos
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    regs.forEach(function(r){ r.unregister(); });
-  });
-  caches.keys().then(function(keys){
-    keys.forEach(function(k){ caches.delete(k); });
-  });
-}
-</script>
+
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});</script>
 </body>
 </html>
